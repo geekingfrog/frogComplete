@@ -1,8 +1,14 @@
 @font-face {
-  font-family: 'mozTTLight';
+  font-family: 'mozTT';
   font-style: normal;
   font-weight: normal;
-  src: url('../assets/fonts/MozTT-Light.ttf') format('truetype');
+  src: url('../assets/fonts/MozTT-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'mozTT';
+  font-weight: bold;
+  src: url('../assets/fonts/MozTT-Bold.ttf') format('truetype');
 }
 
 * {
@@ -11,7 +17,7 @@
 
 body {
   background: #ddd;
-  font-family: 'mozTTLight';
+  font-family: 'mozTT';
 }
 
 input {
@@ -33,14 +39,16 @@ input:focus {
 
 .completion {
   list-style-type: none;
-  margin: 0 .5em;
-  margin-top: -.4em;
+  margin: 0 .4em;
   padding: 0;
   border: 1px solid #ccc;
   border-radius: 4px;
   display: block;
+  position: absolute;
   width: 300px;
   background: white;
+
+  transition: opacity .5s;
 }
 
 .completion li {
@@ -51,6 +59,16 @@ input:focus {
   background: rgba(230, 96, 0, .8);
   cursor: pointer;
   outline: 0;
+}
+
+.completion li.more {
+  text-align: center;
+  font-size: 90%;
+}
+
+.completion li.more:hover {
+  background: white;
+  cursor: default;
 }
 
 /* to have nice round corners */
