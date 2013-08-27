@@ -1,0 +1,13 @@
+{
+  "name": "inputAutocomplete",
+  "version": "0.0.0",
+  "description": "assignment for mozilla pre-interview",
+  "author": "Grégoire Charvet (geekingfrog)",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-jshint": "~0.6.3",
+    "chai": "~1.7.2",
+    "grunt-mocha-test": "~0.6.3"
+  }
+}
