@@ -1,3 +1,66 @@
+@font-face {
+  font-family: 'mozTTLight';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../assets/fonts/MozTT-Light.ttf') format('truetype');
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   background: #ddd;
+  font-family: 'mozTTLight';
 }
+
+input {
+  margin: 0;
+  padding: .3em;
+  margin: .5em;
+  width: 300px;
+  display: block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: all .6s;
+}
+
+input:focus {
+  border-color: #E66000;
+  outline: 0;
+  /* box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(230, 96, 0, .5); */
+}
+
+.completion {
+  list-style-type: none;
+  margin: 0 .5em;
+  margin-top: -.4em;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: block;
+  width: 300px;
+  background: white;
+}
+
+.completion li {
+  padding: .1em .5em;
+}
+
+.completion li:hover, .completion li:focus {
+  background: rgba(230, 96, 0, .8);
+  cursor: pointer;
+  outline: 0;
+}
+
+/* to have nice round corners */
+.completion li:first-child:hover, .completion li:first-child:focus {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.completion li:last-child:hover, .completion li:last-child:focus {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+

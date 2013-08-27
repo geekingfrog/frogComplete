@@ -15,7 +15,12 @@
   <h2>Demo</h2>
 
   <div class="user-input">
-    <input type="text" name="target" id="target" value=""  />
+    <input type="text" name="target" id="target" tabindex=1 autofocus />
+    <ul class="completion">
+      <li tabindex=2>bla</li>
+      <li tabindex=3>two</li>
+      <li tabindex=4>three</li>
+    </ul>
     <div class="message">
     
     </div>
@@ -23,93 +28,9 @@
   </div>
 
 
-  <!-- raw data inlined in the document for the moment -->
-  <script type="text/javascript" charset="utf-8">
- var data = [
-  {"cc":"YE", "offset":"+03:00,+03:00", "city":"Aden"},
-  {"cc":"KZ", "offset":"+06:00,+06:00", "city":"Almaty"},
-  {"cc":"JO", "offset":"+02:00,+03:00", "city":"Amman"},
-  {"cc":"RU", "offset":"+12:00,+12:00", "city":"Anadyr"},
-  {"cc":"KZ", "offset":"+05:00,+05:00", "city":"Aqtau"},
-  {"cc":"KZ", "offset":"+05:00,+05:00", "city":"Aqtobe"},
-  {"cc":"TM", "offset":"+05:00,+05:00", "city":"Ashgabat"},
-  {"cc":"TM", "offset":"+05:00,+05:00", "city":"Ashkhabad", "id":"Asia/Ashgabat"},
-  {"cc":"IQ", "offset":"+03:00,+03:00", "city":"Baghdad"},
-  {"cc":"BH", "offset":"+03:00,+03:00", "city":"Bahrain"},
-  {"cc":"AZ", "offset":"+04:00,+05:00", "city":"Baku"},
-  {"cc":"TH", "offset":"+07:00,+07:00", "city":"Bangkok"},
-  {"cc":"LB", "offset":"+02:00,+03:00", "city":"Beirut"},
-  {"cc":"KG", "offset":"+06:00,+06:00", "city":"Bishkek"},
-  {"cc":"BN", "offset":"+08:00,+08:00", "city":"Brunei"},
-  {"cc":"MN", "offset":"+08:00,+08:00", "city":"Choibalsan"},
-  {"cc":"CN", "offset":"+08:00,+08:00", "city":"Chongqing"},
-  {"cc":"CN", "offset":"+08:00,+08:00", "city":"Chungking", "id":"Asia/Chongqing"},
-  {"cc":"LK", "offset":"+05:30,+05:30", "city":"Colombo"},
-  {"cc":"SY", "offset":"+02:00,+03:00", "city":"Damascus"},
-  {"cc":"BD", "offset":"+06:00,+06:00", "city":"Dhaka"},
-  {"cc":"TL", "offset":"+09:00,+09:00", "city":"Dili"},
-  {"cc":"AE", "offset":"+04:00,+04:00", "city":"Dubai"},
-  {"cc":"TJ", "offset":"+05:00,+05:00", "city":"Dushanbe"},
-  {"cc":"PS", "offset":"+02:00,+03:00", "city":"Gaza"},
-  {"cc":"CN", "offset":"+08:00,+08:00", "city":"Harbin"},
-  {"cc":"PS", "offset":"+02:00,+03:00", "city":"Hebron"},
-  {"cc":"VN", "offset":"+07:00,+07:00", "city":"Ho_Chi_Minh"},
-  {"cc":"HK", "offset":"+08:00,+08:00", "city":"Hong_Kong"},
-  {"cc":"MN", "offset":"+07:00,+07:00", "city":"Hovd"},
-  {"cc":"RU", "offset":"+09:00,+09:00", "city":"Irkutsk"},
-  {"cc":"TR", "offset":"+02:00,+03:00", "city":"Istanbul", "id":"Europe/Istanbul"},
-  {"cc":"ID", "offset":"+07:00,+07:00", "city":"Jakarta"},
-  {"cc":"ID", "offset":"+09:00,+09:00", "city":"Jayapura"},
-  {"cc":"IL", "offset":"+02:00,+03:00", "city":"Jerusalem"},
-  {"cc":"AF", "offset":"+04:30,+04:30", "city":"Kabul"},
-  {"cc":"RU", "offset":"+12:00,+12:00", "city":"Kamchatka"},
-  {"cc":"PK", "offset":"+05:00,+05:00", "city":"Karachi"},
-  {"cc":"CN", "offset":"+08:00,+08:00", "city":"Kashgar"},
-  {"cc":"NP", "offset":"+05:45,+05:45", "city":"Kathmandu"},
-  {"cc":"IN", "offset":"+05:30,+05:30", "city":"Kolkata"},
-  {"cc":"RU", "offset":"+08:00,+08:00", "city":"Krasnoyarsk"},
-  {"cc":"MY", "offset":"+08:00,+08:00", "city":"Kuala_Lumpur"},
-  {"cc":"MY", "offset":"+08:00,+08:00", "city":"Kuching"},
-  {"cc":"KW", "offset":"+03:00,+03:00", "city":"Kuwait"},
-  {"cc":"MO", "offset":"+08:00,+08:00", "city":"Macau"},
-  {"cc":"RU", "offset":"+12:00,+12:00", "city":"Magadan"},
-  {"cc":"ID", "offset":"+08:00,+08:00", "city":"Makassar"},
-  {"cc":"PH", "offset":"+08:00,+08:00", "city":"Manila"},
-  {"cc":"OM", "offset":"+04:00,+04:00", "city":"Muscat"},
-  {"cc":"CY", "offset":"+02:00,+03:00", "city":"Nicosia"},
-  {"cc":"RU", "offset":"+07:00,+07:00", "city":"Novokuznetsk"},
-  {"cc":"RU", "offset":"+07:00,+07:00", "city":"Novosibirsk"},
-  {"cc":"RU", "offset":"+07:00,+07:00", "city":"Omsk"},
-  {"cc":"KZ", "offset":"+05:00,+05:00", "city":"Oral"},
-  {"cc":"KH", "offset":"+07:00,+07:00", "city":"Phnom_Penh"},
-  {"cc":"ID", "offset":"+07:00,+07:00", "city":"Pontianak"},
-  {"cc":"KP", "offset":"+09:00,+09:00", "city":"Pyongyang"},
-  {"cc":"QA", "offset":"+03:00,+03:00", "city":"Qatar"},
-  {"cc":"KZ", "offset":"+06:00,+06:00", "city":"Qyzylorda"},
-  {"cc":"MM", "offset":"+06:30,+06:30", "city":"Rangoon"},
-  {"cc":"SA", "offset":"+03:00,+03:00", "city":"Riyadh"},
-  {"cc":"VN", "offset":"+07:00,+07:00", "city":"Saigon", "id":"Asia/Ho_Chi_Minh"},
-  {"cc":"RU", "offset":"+11:00,+11:00", "city":"Sakhalin"},
-  {"cc":"UZ", "offset":"+05:00,+05:00", "city":"Samarkand"},
-  {"cc":"KR", "offset":"+09:00,+09:00", "city":"Seoul"},
-  {"cc":"CN", "offset":"+08:00,+08:00", "city":"Shanghai"},
-  {"cc":"SG", "offset":"+08:00,+08:00", "city":"Singapore"},
-  {"cc":"TW", "offset":"+08:00,+08:00", "city":"Taipei"},
-  {"cc":"UZ", "offset":"+05:00,+05:00", "city":"Tashkent"},
-  {"cc":"GE", "offset":"+04:00,+04:00", "city":"Tbilisi"},
-  {"cc":"IR", "offset":"+03:30,+04:30", "city":"Tehran"},
-  {"cc":"IL", "offset":"+02:00,+03:00", "city":"Tel_Aviv", "id":"Asia/Jerusalem"},
-  {"cc":"BT", "offset":"+06:00,+06:00", "city":"Thimphu"},
-  {"cc":"JP", "offset":"+09:00,+09:00", "city":"Tokyo"},
-  {"cc":"MN", "offset":"+08:00,+08:00", "city":"Ulan_Bator"},
-  {"cc":"CN", "offset":"+08:00,+08:00", "city":"Urumqi"},
-  {"cc":"LA", "offset":"+07:00,+07:00", "city":"Vientiane"},
-  {"cc":"RU", "offset":"+11:00,+11:00", "city":"Vladivostok"},
-  {"cc":"RU", "offset":"+10:00,+10:00", "city":"Yakutsk"},
-  {"cc":"RU", "offset":"+06:00,+06:00", "city":"Yekaterinburg"},
-  {"cc":"AM", "offset":"+04:00,+04:00", "city":"Yerevan"}
-]; 
-  </script>
+  <!-- for convenience exports all data in the global scope-->
+  <script src="data.js" type="text/javascript" charset="utf-8"></script>
+
   <script src="./src/autocomplete.js" type="text/javascript" charset="utf-8"></script>
 
   </body>
