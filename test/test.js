@@ -1,8 +1,7 @@
-var should = require("chai").should();
-var autocomplete = require("../src/autocomplete");
+test("hello", function() {
+  ok(1===1, "passed !");
+});
 
-describe("autocomplete", function() {
-  it("should export something", function() {
-    autocomplete.should.not.be.empty;
-  });
+test("Creation", function() {
+  throws(function(){new Autocomplete();}, "Cannot create the widget without a target");
 });
