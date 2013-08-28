@@ -4,15 +4,17 @@ var globalOpts = {verbose: false};
 
 // polyfill for new Event() in phantomJS, see
 // https://github.com/ariya/phantomjs/issues/11289
-var removeEvent = document.createEvent('CustomEvent');  // MUST be 'CustomEvent'
-removeEvent.initCustomEvent('removeAutocomplete', false, false, null);
+var createEvent = function(name) {
+  var evt = document.createEvent('CustomEvent'); // MUST be 'CustomEvent'
+  evt.initCustomEvent(name, true, false, null);
+  return evt;
+};
+
 
 // utility
 var simulateInput = function(el, input) {
   el.value = input;
-  var changeEvent = document.createEvent('CustomEvent');
-  changeEvent.initCustomEvent('change', false, false, null);
-  el.dispatchEvent(changeEvent);
+  el.dispatchEvent(createEvent('change'));
 };
 
 module("Creation and destruction", {
@@ -22,7 +24,7 @@ module("Creation and destruction", {
   teardown: function() {
     var node = document.querySelector(this.target);
 
-    node.dispatchEvent(removeEvent);
+    node.dispatchEvent(createEvent('removeAutocomplete'));
   }
 });
 
@@ -40,14 +42,14 @@ test("Destruction", function() {
   var auto = new Autocomplete(this.target, [], globalOpts);
   ok(auto , "Sanity test, ");
   ok(document.querySelector('ul.suggestion'), "List of suggestion added to the dom");
-  document.querySelector(this.target).dispatchEvent(removeEvent);
+  document.querySelector(this.target).dispatchEvent(createEvent('removeAutocomplete'));
   equal(document.querySelector('ul.suggestion'), null, "suggestion list removed");
 });
 
 test("Valid DOM element", function(){
   var domTarget = document.querySelector(this.target);
   ok(new Autocomplete(domTarget, [], globalOpts), "Can also directly pass the dom node");
-  domTarget.dispatchEvent(removeEvent);
+  domTarget.dispatchEvent(createEvent('removeAutocomplete'));
 });
 
 test("No data passed", function() {
@@ -73,7 +75,7 @@ module("Filtering data", {
   },
 
   teardown: function() {
-    this.target.dispatchEvent(removeEvent);
+    this.target.dispatchEvent(createEvent('removeAutocomplete'));
   }
 });
 
@@ -108,7 +110,7 @@ test("With a custom accessor function", function() {
   deepEqual(autocomplete._getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
 
   delete globalOpts.value;
-  target.dispatchEvent(removeEvent);
+  target.dispatchEvent(createEvent('removeAutocomplete'));
 });
 
 module("List of suggestions", {
@@ -125,7 +127,7 @@ module("List of suggestions", {
   },
 
   teardown: function() {
-    this.target.dispatchEvent(removeEvent);
+    this.target.dispatchEvent(createEvent('removeAutocomplete'));
   }
 });
 
@@ -139,4 +141,11 @@ test("Display only relevant suggestions", function() {
   simulateInput(this.target, "bulbasaur1");
   equal(document.querySelector('ul.suggestion').children.length, 1,
     "Only one suggestion");
+});
+
+test("Click on suggestion copy input", function() {
+  simulateInput(this.target, "bulb");
+  var item = document.querySelectorAll('ul.suggestion li')[0];
+  item.dispatchEvent(createEvent('click'));
+  equal(this.target.value, "Bulbasaur1", "Clicking on suggestion copy its content to the input");
 });

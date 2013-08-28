@@ -25,6 +25,7 @@
 
 
   exports.Autocomplete = function(el, data, opts) {
+    var widget = this;
     opts = opts || {};
 
     // controll the verbosity
@@ -84,6 +85,12 @@
     this._data = data;
     this.el = el;
 
+    // object used to map a data to a dom node.
+    // It is used with the suggestion list, where each item
+    // is associated with one datum, but since these data can be arbitrary,
+    // they cannot (and shouldn't) be serialized in the DOM
+    var internalStore = {};
+
     var list = document.createElement('ul');
     list.classList.add('suggestion');
     list.style.display = "none"; //don't display it yet
@@ -107,9 +114,11 @@
 
         list.innerHTML = '';
         // populate the list
-        toDisplay.forEach(function(datum) {
+        toDisplay.forEach(function(datum, index) {
           var item = document.createElement('li');
           item.innerHTML = display(datum, val);
+          item.setAttribute('dataId', index);
+          internalStore[index] = datum;
           list.appendChild(item);
         });
         if(filteredData.length >= displayLimit) {
@@ -128,6 +137,16 @@
 
     hideSuggestions = function(){list.style.opacity=0;};
     el.addEventListener("focusout", hideSuggestions);
+
+    var selectSuggestion = function(ev) {
+      ev.stopPropagation();
+      var dataId = ev.target.getAttribute('dataId');
+      var datum = internalStore[dataId];
+      el.value = value(datum);
+      widget.validInput = true;
+      widget.selectedDatum = datum;
+    };
+    list.addEventListener("click", selectSuggestion);
 
     return this;
   };
