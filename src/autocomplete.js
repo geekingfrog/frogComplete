@@ -77,9 +77,7 @@
 
     //default accessor
     value = opts.value || function(x) { return x; };
-
     display = opts.display || value;
-
     var displayLimit = opts.displayLimit || 5;
 
     this._data = data;
@@ -93,7 +91,8 @@
 
     var list = document.createElement('ul');
     list.classList.add('suggestion');
-    list.style.display = "none"; //don't display it yet
+    list.classList.add('fade');
+    list.classList.add('hide'); //don't display it yet
     insertAfter(el, list);
 
     // debounce this function later if performance becomes a problem.
@@ -102,8 +101,7 @@
       return function() {
         var val = widget.el.value;
         var emphasize = new RegExp("("+val+")", 'i');
-        list.style.display = 'block';
-        list.style.opacity = 1;
+        list.classList.remove('hide');
 
         if(lastInput === el.value) {
           return;
@@ -135,7 +133,9 @@
       el.addEventListener(evt, updateSuggestions);
     });
 
-    hideSuggestions = function(){list.style.opacity=0;};
+    hideSuggestions = function(){
+      list.classList.add('hide');
+    };
     el.addEventListener("focusout", hideSuggestions);
 
     var selectSuggestion = function(ev) {

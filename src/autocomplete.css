@@ -1,15 +1,24 @@
+.fade {
+  opacity: 1;
+  transition: opacity .3s;
+  height: auto;
+}
+
+.hide {
+  opacity: 0;
+  height: 0;
+}
+
 .suggestion {
   list-style-type: none;
   margin: 0 .4em;
   padding: 0;
   border: 1px solid #ccc;
   border-radius: 4px;
-  display: block;
   position: absolute;
   width: 300px;
   background: white;
-
-  transition: opacity .5s;
+  display: block;
 }
 
 .suggestion li {
