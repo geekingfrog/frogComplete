@@ -3,16 +3,9 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     jshint: {
-      src: {
-        src: ['src/**/*.js']
-      },
-
-      test: {
-        src: ['test/**/*.js'],
-        options: {
-          expr: true,
-          ignores: ['test/lib/*.js']
-        }
+      files: ['src/**/*.js', 'test/**/*.js', 'Gruntfile.js'],
+      options: {
+        ignores: ['test/lib/*.js']
       }
 
     },
@@ -22,7 +15,7 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['<%= jshint.src.src %>', '<%= jshint.test.src %>'],
+      files: ['<%= jshint.files %>'],
       tasks: ['jshint', 'qunit']
     }
 
@@ -34,4 +27,4 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['jshint', 'qunit', 'watch']);
 
-}
+};
