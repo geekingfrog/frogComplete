@@ -4,7 +4,8 @@
     display: function(d, val) {
       var emphasize = new RegExp("("+val+")",'i');
       return d.city.replace(emphasize, "<strong>$1</strong>")+" ("+d.cc+")";
-    }
+    },
+    validation: true
   };
 
   var autocomplete = new Autocomplete('input', data, opts);

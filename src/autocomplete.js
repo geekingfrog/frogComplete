@@ -28,6 +28,11 @@
     var widget = this;
     opts = opts || {};
 
+    // for validation
+    widget.isInputValid = null;
+    widget.selectedDatum = null;
+
+
     // controll the verbosity
     if(opts.verbose === void(0)) opts.verbose = true;
     var warn = function() {
@@ -69,7 +74,7 @@
         el.removeEventListener(evt, updateSuggestions);
       });
       el.removeEventListener("removeAutocomplete");
-      el.removeEventListener("focusout", hideSuggestions);
+      el.removeEventListener("blur", hideSuggestions);
       if(list && list.parentNode) { list.parentNode.removeChild(list); }
     };
 
@@ -101,7 +106,11 @@
       return function() {
         var val = widget.el.value;
         var emphasize = new RegExp("("+val+")", 'i');
-        list.classList.remove('hide');
+        if(val) {
+          list.classList.remove('hide');
+        } else {
+          list.classList.add('hide');
+        }
 
         if(lastInput === el.value) {
           return;
@@ -136,20 +145,60 @@
     hideSuggestions = function(){
       list.classList.add('hide');
     };
-    el.addEventListener("focusout", hideSuggestions);
+    el.addEventListener("blur", hideSuggestions);
 
     var selectSuggestion = function(ev) {
       ev.stopPropagation();
       var dataId = ev.target.getAttribute('dataId');
       var datum = internalStore[dataId];
       el.value = value(datum);
-      widget.validInput = true;
+      console.log("set isInputValid to true");
+      widget.isInputValid = true;
       widget.selectedDatum = datum;
     };
     list.addEventListener("click", selectSuggestion);
 
-    return this;
+    // validation part
+    var validateTarget = null;
+    if(opts.validation === true) {
+      // the input should be in a form, so the event to block is the 'submit'
+      var currentNode = el;
+      while(validateTarget === null && currentNode !== null) {
+        if(currentNode.nodeName === 'FORM') {
+          validateTarget = currentNode;
+        } else {
+          currentNode = currentNode.parentElement;
+        }
+      }
+    } else if(typeof opts.validation === 'string') {
+      validateTarget = document.querySelector(opts.validation);
+      if(!validateTarget) {
+        warn("No element found for selector: "+opts.validation+" ! Validation disabled");
+      }
+    }
+
+    if(validateTarget) {
+      validateTarget.addEventListener('submit', function(ev) {
+        console.log("input valid? ", widget.isInputValid);
+        if(widget.isInputValid) {
+          log("submit form");
+        } else {
+          console.log("form invalid !");
+          var warnItem = document.createElement('li');
+          warnItem.classList.add('autocomplete-error');
+          warnItem.classList.add('more');
+          warnItem.textContent = "invalid input, you must chose from the list.";
+          list.innerHTML = '';
+          list.appendChild(warnItem);
+          list.classList.remove('hide');
+          ev.preventDefault();
+        }
+      });
+    }
+
+    return widget;
   };
+
 
   // from the content of the input element, return a subset (eventually empty)
   // of the original data where each element matches the content with respect

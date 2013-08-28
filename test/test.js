@@ -10,6 +10,14 @@ var createEvent = function(name) {
   return evt;
 };
 
+// form.submit() doesn't trigger the 'submit' handlers, and so bypass any
+// validation. So to test that, I manually trigger the event 'submit'.
+// This is a hack and a limitation of my approach. I don't know if there
+// is any workaround for this.
+var submitForm = function(form) {
+  form.dispatchEvent(createEvent('submit'));
+};
+
 
 // utility
 var simulateInput = function(el, input) {
@@ -67,9 +75,6 @@ module("Filtering data", {
     ];
     this.data = data;
     this.target = document.querySelector('input#target');
-    // this.target = document.createElement('input');
-    // this.target.type = 'text';
-    // document.querySelector('body').appendChild(target);
     simulateInput(this.target, '');
     this.autocomplete = new Autocomplete(target, data, globalOpts);
   },
@@ -102,14 +107,13 @@ module("Custom accessor function for filteredData");
 
 test("With a custom accessor function", function() {
   data = [ {name: "Bulbasaur"}, {name: "Mew"} ];
-  globalOpts.value = function(d) { return d.name; };
+  var opts = _.extend({}, globalOpts, {value: function(d) { return d.name; }});
   var target = document.querySelector('input#target');
-  var autocomplete = new Autocomplete(target, data, globalOpts);
+  var autocomplete = new Autocomplete(target, data, opts);
 
   simulateInput(target, "bul");
   deepEqual(autocomplete._getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
 
-  delete globalOpts.value;
   target.dispatchEvent(createEvent('removeAutocomplete'));
 });
 
@@ -134,7 +138,20 @@ module("List of suggestions", {
 test("Display list of suggestions", function() {
   simulateInput(this.target, "bulba");
   var children = document.querySelector('ul.suggestion').children;
-  equal(children.length, 6, "only show 5 suggestion by default");
+  equal(children.length, 6, "only show 5 suggestion by default (plus the 'more' item)");
+
+  simulateInput(this.target, "mew");
+  children = document.querySelector('ul.suggestion').children;
+  equal(children.length, 1, "The 'more' item is not shown if filtered result below display limit");
+});
+
+test("Custom number of displayed suggestion", function() {
+  var opts = _.extend({}, globalOpts, {displayLimit: 2});
+  new Autocomplete(this.target, this.data, opts);
+
+  simulateInput(this.target, "bulba");
+  var children = document.querySelector('ul.suggestion').children;
+  equal(children.length, 3, "Can override the number of displayed suggestions");
 });
 
 test("Display only relevant suggestions", function() {
@@ -148,4 +165,27 @@ test("Click on suggestion copy input", function() {
   var item = document.querySelectorAll('ul.suggestion li')[0];
   item.dispatchEvent(createEvent('click'));
   equal(this.target.value, "Bulbasaur1", "Clicking on suggestion copy its content to the input");
+});
+
+module("Validation", {
+  setup: function() {
+    var data = [
+      "Bulbasaur1", "Bulbasaur2", "Bulbasaur3", "Bulbasaur4", "Bulbasaur5", "Bulbasaur6", "Mew", "Pikachu"
+    ];
+    this.data = data;
+    this.target = document.querySelector('input#target');
+    simulateInput(this.target, '');
+    this.form = document.querySelector('form');
+  },
+
+  teardown: function() {
+    this.target.dispatchEvent(createEvent('removeAutocomplete'));
+  }
+});
+
+test("Validation set to true", function() {
+  var opts = _.extend({}, globalOpts, {validation: true});
+  new Autocomplete(this.target, this.data, opts);
+  submitForm(this.form);
+  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
 });

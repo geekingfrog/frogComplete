@@ -19,10 +19,12 @@
   width: 300px;
   background: white;
   display: block;
+  overflow: auto;
 }
 
 .suggestion li {
   padding: .1em .5em;
+  display: block;
 }
 
 .suggestion li:hover, .suggestion li:focus {
@@ -52,4 +54,7 @@
   border-bottom-right-radius: 4px;
 }
 
-
+.suggestion li.autocomplete-error, .suggestion li.autocomplete-error:hover {
+  color: rgb(198,15,19);
+  background: rgb(249, 230, 230);
+}
