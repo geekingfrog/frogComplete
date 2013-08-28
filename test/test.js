@@ -7,6 +7,14 @@ var globalOpts = {verbose: false};
 var removeEvent = document.createEvent('CustomEvent');  // MUST be 'CustomEvent'
 removeEvent.initCustomEvent('removeAutocomplete', false, false, null);
 
+// utility
+var simulateInput = function(el, input) {
+  el.value = input;
+  var changeEvent = document.createEvent('CustomEvent');
+  changeEvent.initCustomEvent('change', false, false, null);
+  el.dispatchEvent(changeEvent);
+};
+
 module("Creation and destruction", {
   setup: function(){
     this.target = 'input#target';
@@ -57,9 +65,11 @@ module("Filtering data", {
     ];
     this.data = data;
     this.target = document.querySelector('input#target');
-    this.target.value = '';
+    // this.target = document.createElement('input');
+    // this.target.type = 'text';
+    // document.querySelector('body').appendChild(target);
+    simulateInput(this.target, '');
     this.autocomplete = new Autocomplete(target, data, globalOpts);
-    window.autocomplete = this.autocomplete;
   },
 
   teardown: function() {
@@ -73,16 +83,16 @@ test("No search query", function() {
 });
 
 test("With some user input", function() {
-  this.target.value = "no data for this one";
+  simulateInput(this.target, "no data for this one");
   equal(this.autocomplete._getFilteredData().length, 0, "No data for the wrong input");
 
-  target.value = "Bul";
+  simulateInput(this.target, "Bul");
   deepEqual(this.autocomplete._getFilteredData(), ["Bulbasaur"], "Match result");
 
-  target.value = "basa";
+  simulateInput(this.target, "basa");
   deepEqual(this.autocomplete._getFilteredData(), ["Bulbasaur"], "Match anywhere in the data");
 
-  target.value = "a";
+  simulateInput(this.target, "a");
   deepEqual(this.autocomplete._getFilteredData(), ["Bulbasaur", "Pikachu"], "Returns all matching data");
 });
 
@@ -93,7 +103,8 @@ test("With a custom accessor function", function() {
   globalOpts.value = function(d) { return d.name; };
   var target = document.querySelector('input#target');
   var autocomplete = new Autocomplete(target, data, globalOpts);
-  target.value = "bul";
+
+  simulateInput(target, "bul");
   deepEqual(autocomplete._getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
 
   delete globalOpts.value;
@@ -107,8 +118,9 @@ module("List of suggestions", {
     ];
     this.data = data;
     this.target = document.querySelector('input#target');
-    this.target.value = '';
-    this.autocomplete = new Autocomplete(target, data, globalOpts);
+
+    simulateInput(this.target, '');
+    this.autocomplete = new Autocomplete(this.target, data, globalOpts);
     window.autocomplete = this.autocomplete;
   },
 
@@ -117,8 +129,14 @@ module("List of suggestions", {
   }
 });
 
-// test("Display list of suggestions", function() {
-//   this.target.value = "bulba";
-//   var children = document.querySelector('ul.suggestion').children;
-//   equal(children.length, 6, "only show 5 suggestion by default");
-// });
+test("Display list of suggestions", function() {
+  simulateInput(this.target, "bulba");
+  var children = document.querySelector('ul.suggestion').children;
+  equal(children.length, 6, "only show 5 suggestion by default");
+});
+
+test("Display only relevant suggestions", function() {
+  simulateInput(this.target, "bulbasaur1");
+  equal(document.querySelector('ul.suggestion').children.length, 1,
+    "Only one suggestion");
+});

@@ -10,6 +10,7 @@
 
   // function to update the dom list of suggestion
   var updateSuggestions;
+  var updateEvents = ["focusin", "change", "keyup", "paste", "input"];
   var hideSuggestions;
   var removeWidget;
 
@@ -63,7 +64,7 @@
 
     removeWidget = function(el) {
       el.removeAttribute("autocomplete");
-      ["change", "input", "paste"].forEach(function(evt) {
+      updateEvents.forEach(function(evt) {
         el.removeEventListener(evt, updateSuggestions);
       });
       el.removeEventListener("removeAutocomplete");
@@ -111,7 +112,7 @@
           item.innerHTML = display(datum, val);
           list.appendChild(item);
         });
-        if(filteredData.length > displayLimit) {
+        if(filteredData.length >= displayLimit) {
           var more = document.createElement('li');
           more.classList.add('more');
           more.innerHTML = 'and more...';
@@ -121,7 +122,7 @@
     }(this);
 
     // add the required listeners to trigger the update of suggestions.
-    ["focusin", "change", "keyup", "paste"].forEach(function(evt) {
+    updateEvents.forEach(function(evt) {
       el.addEventListener(evt, updateSuggestions);
     });
 
@@ -138,13 +139,15 @@
     var text = this.el.value;
     if(!text) return [];
 
-    var regexp = new RegExp(text, 'gi');
+    // do not use the 'g' flag in the regexp here.
+    // if the global flag is used, then the index of the regex should be resetted
+    // before testing for a new string:
+    // regexp.lastIndex=0;
+    var regexp = new RegExp(text, 'i');
     return this._data.filter(function(val) {
       return regexp.test(value(val));
     });
   };
-
-
 
 })(this);
 
