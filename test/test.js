@@ -85,22 +85,22 @@ module("Filtering data", {
 });
 
 test("No search query", function() {
-  var allData = this.autocomplete._getFilteredData();
+  var allData = this.autocomplete.getFilteredData();
   equal(allData.length, 0, "No data match an empty query");
 });
 
 test("With some user input", function() {
   simulateInput(this.target, "no data for this one");
-  equal(this.autocomplete._getFilteredData().length, 0, "No data for the wrong input");
+  equal(this.autocomplete.getFilteredData().length, 0, "No data for the wrong input");
 
   simulateInput(this.target, "Bul");
-  deepEqual(this.autocomplete._getFilteredData(), ["Bulbasaur"], "Match result");
+  deepEqual(this.autocomplete.getFilteredData(), ["Bulbasaur"], "Match result");
 
   simulateInput(this.target, "basa");
-  deepEqual(this.autocomplete._getFilteredData(), ["Bulbasaur"], "Match anywhere in the data");
+  deepEqual(this.autocomplete.getFilteredData(), ["Bulbasaur"], "Match anywhere in the data");
 
   simulateInput(this.target, "a");
-  deepEqual(this.autocomplete._getFilteredData(), ["Bulbasaur", "Pikachu"], "Returns all matching data");
+  deepEqual(this.autocomplete.getFilteredData(), ["Bulbasaur", "Pikachu"], "Returns all matching data");
 });
 
 module("Custom accessor function for filteredData");
@@ -112,7 +112,7 @@ test("With a custom accessor function", function() {
   var autocomplete = new Autocomplete(target, data, opts);
 
   simulateInput(target, "bul");
-  deepEqual(autocomplete._getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
+  deepEqual(autocomplete.getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
 
   target.dispatchEvent(createEvent('removeAutocomplete'));
 });
@@ -189,3 +189,31 @@ test("Validation set to true", function() {
   submitForm(this.form);
   ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
 });
+
+test("Validation with a selector", function() {
+  var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
+  new Autocomplete(this.target, this.data, opts);
+  submitForm(this.form);
+  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
+});
+
+test("Validation with a dom node", function(){
+  var targetForm = document.querySelector('form#targetForm');
+  var opts = _.extend({}, globalOpts, {validation: targetForm});
+  new Autocomplete(this.target, this.data, opts);
+  submitForm(this.form);
+  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
+});
+
+test("Custom validation trigger", function() {
+  var targetValidation = document.querySelector('div#submitTrigger');
+  var opts = _.extend({}, globalOpts, {
+    validation: targetValidation,
+    validateTrigger: 'click'
+  });
+  new Autocomplete(this.target, this.data, opts);
+  targetValidation.dispatchEvent(createEvent('click'));
+  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
+});
+
+

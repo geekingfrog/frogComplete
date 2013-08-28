@@ -116,7 +116,7 @@
           return;
         }
         lastInput = el.value;
-        var filteredData = widget._getFilteredData();
+        var filteredData = widget.getFilteredData();
         var toDisplay = filteredData.slice(0, displayLimit);
 
         list.innerHTML = '';
@@ -160,6 +160,8 @@
 
     // validation part
     var validateTarget = null;
+    var validateTrigger = opts.validateTrigger || 'submit';
+
     if(opts.validation === true) {
       // the input should be in a form, so the event to block is the 'submit'
       var currentNode = el;
@@ -175,15 +177,15 @@
       if(!validateTarget) {
         warn("No element found for selector: "+opts.validation+" ! Validation disabled");
       }
+    } else if(opts.validation && opts.validation.nodeType === 1) {
+      // nodeType === 1 <-> Element_node
+      validateTarget = opts.validation;
     }
 
     if(validateTarget) {
-      validateTarget.addEventListener('submit', function(ev) {
-        console.log("input valid? ", widget.isInputValid);
-        if(widget.isInputValid) {
-          log("submit form");
-        } else {
-          console.log("form invalid !");
+      validateTarget.addEventListener(validateTrigger, function(ev) {
+        if(!widget.isInputValid) {
+          log("form invalid !");
           var warnItem = document.createElement('li');
           warnItem.classList.add('autocomplete-error');
           warnItem.classList.add('more');
@@ -203,7 +205,7 @@
   // from the content of the input element, return a subset (eventually empty)
   // of the original data where each element matches the content with respect
   // to the 'value' accessor.
-  Autocomplete.prototype._getFilteredData = function() {
+  Autocomplete.prototype.getFilteredData = function() {
     var text = this.el.value;
     if(!text) return [];
 
