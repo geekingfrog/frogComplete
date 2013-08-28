@@ -12,7 +12,7 @@ module("Creation and destruction", {
     this.target = 'input#target';
   },
   teardown: function() {
-    var node = document.querySelector('input#target');
+    var node = document.querySelector(this.target);
 
     node.dispatchEvent(removeEvent);
   }
@@ -23,12 +23,23 @@ test("Invalid target element", function() {
   throws(function(){new Autocomplete('doesntexist', null, globalOpts);}, "Cannot create the widget with an invalid dom selector");
 });
 
-test("Valid target element", function() {
-  var auto1;
-  ok(auto1 = new Autocomplete(this.target, [], globalOpts), "Can pass a valid selector");
+test("Valid target selector", function() {
+  var auto1 = new Autocomplete(this.target, [], globalOpts);
+  ok(auto1, "Can pass a valid selector");
+});
 
+test("Destruction", function() {
+  var auto = new Autocomplete(this.target, [], globalOpts);
+  ok(auto , "Sanity test, ");
+  ok(document.querySelector('ul.suggestion'), "List of suggestion added to the dom");
+  document.querySelector(this.target).dispatchEvent(removeEvent);
+  equal(document.querySelector('ul.suggestion'), null, "suggestion list removed");
+});
+
+test("Valid DOM element", function(){
   var domTarget = document.querySelector(this.target);
   ok(new Autocomplete(domTarget, [], globalOpts), "Can also directly pass the dom node");
+  domTarget.dispatchEvent(removeEvent);
 });
 
 test("No data passed", function() {
@@ -75,15 +86,39 @@ test("With some user input", function() {
   deepEqual(this.autocomplete._getFilteredData(), ["Bulbasaur", "Pikachu"], "Returns all matching data");
 });
 
+module("Custom accessor function for filteredData");
+
 test("With a custom accessor function", function() {
   data = [ {name: "Bulbasaur"}, {name: "Mew"} ];
   globalOpts.value = function(d) { return d.name; };
-  this.autocomplete = new Autocomplete(this.target, data, globalOpts);
-  this.target.value = "bul";
-  deepEqual(this.autocomplete._getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
+  var target = document.querySelector('input#target');
+  var autocomplete = new Autocomplete(target, data, globalOpts);
+  target.value = "bul";
+  deepEqual(autocomplete._getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
 
   delete globalOpts.value;
+  target.dispatchEvent(removeEvent);
 });
 
+module("List of suggestions", {
+  setup: function() {
+    var data = [
+      "Bulbasaur1", "Bulbasaur2", "Bulbasaur3", "Bulbasaur4", "Bulbasaur5", "Bulbasaur6", "Mew", "Pikachu"
+    ];
+    this.data = data;
+    this.target = document.querySelector('input#target');
+    this.target.value = '';
+    this.autocomplete = new Autocomplete(target, data, globalOpts);
+    window.autocomplete = this.autocomplete;
+  },
 
+  teardown: function() {
+    this.target.dispatchEvent(removeEvent);
+  }
+});
 
+// test("Display list of suggestions", function() {
+//   this.target.value = "bulba";
+//   var children = document.querySelector('ul.suggestion').children;
+//   equal(children.length, 6, "only show 5 suggestion by default");
+// });

@@ -55,9 +55,7 @@
 
     if(el.getAttribute("autocomplete") === null) {
       el.setAttribute("autocomplete", '');
-      el.addEventListener("removeAutocomplete", function() {
-        log("remove the widget here");
-      });
+      el.addEventListener("removeAutocomplete", function() { removeWidget(el); });
     } else {
       warn("Autocomplete widget already created for this element, removing the previous version.");
       removeWidget(el);
@@ -70,6 +68,7 @@
       });
       el.removeEventListener("removeAutocomplete");
       el.removeEventListener("focusout", hideSuggestions);
+      if(list && list.parentNode) { list.parentNode.removeChild(list); }
     };
 
     opts = opts || {};
@@ -85,10 +84,11 @@
     this.el = el;
 
     var list = document.createElement('ul');
-    list.classList.add('completion');
+    list.classList.add('suggestion');
     list.style.display = "none"; //don't display it yet
     insertAfter(el, list);
 
+    // debounce this function later if performance becomes a problem.
     updateSuggestions = function(widget) {
       var lastInput = null;
       return function() {
