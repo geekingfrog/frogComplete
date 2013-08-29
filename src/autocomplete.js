@@ -30,7 +30,7 @@
  
     // accessor for the data. If the given data is an array of json object, value
     // can be: function(val) { return val.x; }
-    widget.value = opts.value || function(x) { return x; };
+    widget.value = opts.value || function(x) { return x.toString(); };
 
     // what is displayed in the list of suggestion. Default to value with
     // matching part emphasized
@@ -143,7 +143,7 @@
         var emphasize = new RegExp("("+val+")", 'i');
 
         // input is deemed invalid if it has changed
-        if(widget._selectedDatum && val && val !== widget._selectedDatum) {
+        if(val && val !== lastInput){
           widget._isInputValid = false;
           widget._selectedDatum = null;
         }
@@ -205,7 +205,6 @@
       }
     };
     el.addEventListener("blur", widget._hideSuggestions);
-
 
     // validation part
     var validateTarget = null;

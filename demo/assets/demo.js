@@ -25,14 +25,20 @@
     }
   });
 
-  window.validate = new Autocomplete('input#timezones3', timezones, {
+  new Autocomplete('input#timezones3', timezones, {
     value: function(d) { return d.city; },
     validation: true
   });
   document.querySelector('form#formToValidate').addEventListener('submit', function(){
-    if(validate.isInputValid) {
+    if(validate.isInputValid()) {
       alert("the form is valid and submitted");
     }
+  });
+
+  new Autocomplete('input#timezones4', timezones, {
+    value: function(d) { return d.city; },
+    validation: '#buttonTimezones4',
+    validateTrigger: 'click'
   });
 
   window.test = function() {

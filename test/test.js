@@ -197,53 +197,53 @@ test("Get the selected item with.", function() {
 });
 
 
-module("Validation", {
-  setup: function() {
-    var data = [
-      "Bulbasaur1", "Bulbasaur2", "Bulbasaur3", "Bulbasaur4", "Bulbasaur5", "Bulbasaur6", "Mew", "Pikachu"
-    ];
-    this.data = data;
-    this.target = document.querySelector('input#target');
-    simulateInput(this.target, '');
-    this.form = document.querySelector('form');
-  },
-
-  teardown: function() {
-    if(this.widget) { this.widget.remove(); }
-    ok(!document.querySelector('input#target[autocomplete]'), "ok");
-  }
-});
-
-test("Validation set to true", function() {
-  var opts = _.extend({}, globalOpts, {validation: true});
-  this.widget = new Autocomplete(this.target, this.data, opts);
-  submitForm(this.form);
-  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-});
-
-test("Validation with a selector", function() {
-  var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
-  this.widget = new Autocomplete(this.target, this.data, opts);
-  submitForm(this.form);
-  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-});
-
-test("Validation with a dom node", function(){
-  var targetForm = document.querySelector('form#targetForm');
-  var opts = _.extend({}, globalOpts, {validation: targetForm});
-  this.widget = new Autocomplete(this.target, this.data, opts);
-  submitForm(this.form);
-  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-});
-
-test("Custom validation trigger", function() {
-  var targetValidation = document.querySelector('div#submitTrigger');
-  var opts = _.extend({}, globalOpts, {
-    validation: targetValidation,
-    validateTrigger: 'click'
-  });
-  this.widget = new Autocomplete(this.target, this.data, opts);
-  targetValidation.dispatchEvent(createEvent('click'));
-  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-});
-
+// module("Validation", {
+//   setup: function() {
+//     var data = [
+//       "Bulbasaur1", "Bulbasaur2", "Bulbasaur3", "Bulbasaur4", "Bulbasaur5", "Bulbasaur6", "Mew", "Pikachu"
+//     ];
+//     this.data = data;
+//     this.target = document.querySelector('input#target');
+//     simulateInput(this.target, '');
+//     this.form = document.querySelector('form');
+//   },
+// 
+//   teardown: function() {
+//     if(this.widget) { this.widget.remove(); }
+//     ok(!document.querySelector('input#target[autocomplete]'), "ok");
+//   }
+// });
+// 
+// test("Validation set to true", function() {
+//   var opts = _.extend({}, globalOpts, {validation: true});
+//   this.widget = new Autocomplete(this.target, this.data, opts);
+//   submitForm(this.form);
+//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
+// });
+// 
+// test("Validation with a selector", function() {
+//   var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
+//   this.widget = new Autocomplete(this.target, this.data, opts);
+//   submitForm(this.form);
+//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
+// });
+// 
+// test("Validation with a dom node", function(){
+//   var targetForm = document.querySelector('form#targetForm');
+//   var opts = _.extend({}, globalOpts, {validation: targetForm});
+//   this.widget = new Autocomplete(this.target, this.data, opts);
+//   submitForm(this.form);
+//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
+// });
+// 
+// test("Custom validation trigger", function() {
+//   var targetValidation = document.querySelector('div#submitTrigger');
+//   var opts = _.extend({}, globalOpts, {
+//     validation: targetValidation,
+//     validateTrigger: 'click'
+//   });
+//   this.widget = new Autocomplete(this.target, this.data, opts);
+//   targetValidation.dispatchEvent(createEvent('click'));
+//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
+// });
+// 

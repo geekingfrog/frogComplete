@@ -5,6 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./assets/css/normalize.css"/>
     <link rel="stylesheet" href="./assets/css/foundation.css"/>
     <link rel="stylesheet" href="./assets/highlight.js/styles/github.css"/>
@@ -12,7 +13,7 @@
     <link rel="stylesheet" href="../src/autocomplete.css" type="text/css" />
     <link rel="stylesheet" href="./assets/css/demo.css" type="text/css" />
 
-    <title>Simple autocomplete widget</title>
+    <title>FrogComplete</title>
 
   </head>
 
@@ -21,17 +22,13 @@
     <div class="row">
       <div class="large-12 columns">
         <h2 class="title">FrogComplete</h2>
-        <h3 class="subtitle">A small autocomplete library.</h3>
+        <h3 class="subtitle">A small autocomplete widget.</h3>
       </div>
     </div>
 
     </header>
 
-    <div class="row">
-      <div class="large-12 columns columns section">
-        <h4>Super simple to use</h4>
-      </div>
-    </div>
+    <h4 class="section">Super simple to use</h4>
 
     <div class="row">
       <div class="large-7 columns doc">
@@ -52,11 +49,7 @@
 
     </div>
 
-    <div class="row">
-      <div class="large-12 columns section">
-        <h4>Works with complex data</h4>
-      </div>
-    </div>
+    <h4 class="section">Works with complex data</h4>
 
     <div class="row">
 
@@ -76,11 +69,7 @@
 
     </div>
 
-    <div class="row">
-      <div class="large-12 columns section">
-        <h4>Custom display for suggestions</h4>
-      </div>
-    </div>
+    <h4 class="section">Custom display for suggestions</h4>
 
     <div class="row">
 
@@ -90,7 +79,7 @@
     value: function(d) { return d.city; },
     display: function(datum, input) {
       var transform = new RegExp("(" + input + ")", "i");
-      return datum.city.replace(transform, "<span style='color: red;'>$1</span>");
+      return datum.city.replace(transform, "&lt;span style='color: red;'>$1&lt;/span>");
     }
   };
   new Autocomplete('input#timezones', timezones, options);
@@ -104,11 +93,7 @@
     
     </div>
 
-    <div class="row">
-      <div class="large-12 columns section">
-        <h4>Built-in validation</h4>
-      </div>
-    </div>
+    <h4 class="section">Built-in validation</h4>
 
     <div class="row">
       <div class="large-7 columns">
@@ -136,25 +121,21 @@
             </div>
           </form>
         </div>
+
+        <hr />
+        <p>Works also with any element.</p>
+        <input type="text" id="timezones4"/>
+        <br />
+        <div class="button" id="buttonTimezones4">
+          &lt;div&gt; styled as a button
+        </div>
       </div>
     
     </div>
 
-    <div class="row">
-      <div class="large-12 columns section">
-        <h4>And more...</h4>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="large-10 large-centered columns">
-        <ul class="circle">
-          <li>API to access the current input and the suggestions</li>
-          <li>Validation on any element (not limited to <kbd>form</kbd>)</li>
-        </ul>
-      </div>
-    </div>
-
+    <footer>
+    Made by a <a href="http://geekingfrog.com">geekingfrog</a>
+    </footer>
 
 
     <!-- for convenience exports all data in the global scope-->
