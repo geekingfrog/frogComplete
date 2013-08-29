@@ -1,5 +1,5 @@
 ;(function(exports) {
-  exports.data = [
+  exports.timezones = [
     {"cc":"CI", "offset":"+00:00,+00:00", "city":"Abidjan"},
     {"cc":"GH", "offset":"+00:00,+00:00", "city":"Accra"},
     {"cc":"ET", "offset":"+03:00,+03:00", "city":"Addis_Ababa"},

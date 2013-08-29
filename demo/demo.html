@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="./assets/css/normalize.css"/>
+    <link rel="stylesheet" href="./assets/css/foundation.css"/>
+    <link rel="stylesheet" href="./assets/highlight.js/styles/github.css"/>
+
+    <link rel="stylesheet" href="../src/autocomplete.css" type="text/css" />
+    <link rel="stylesheet" href="./assets/css/demo.css" type="text/css" />
+
+    <title>Simple autocomplete widget</title>
+
+  </head>
+
+  <body>
+    <header>
+    <div class="row">
+      <div class="large-12 columns">
+        <h2 class="title">FrogComplete</h2>
+        <h3 class="subtitle">A small autocomplete library.</h3>
+      </div>
+    </div>
+
+    </header>
+
+    <div class="row">
+      <div class="large-12 columns columns section">
+        <h4>Super simple to use</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-7 columns doc">
+
+  <pre> <code class="javascript">
+  var data = ["blue", "green", "red", "orange", "purple", "yellow"];
+  new Autocomplete('input#colors', data);
+  </code> </pre>
+
+      </div>
+
+      <div class="large-5 columns demo">
+         <p>Try entering some colors</p>
+        <form>
+          <input type="text" id="colors" tabindex=1 />
+        </form>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns section">
+        <h4>Works with complex data</h4>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="large-7 columns">
+  <pre> <code class="javascript">
+  var timezones = [{"cc":"TW", "offset":"+08:00,+08:00", "city":"Taipei"}, (...)];
+  new Autocomplete('input#timezones', timezones, {
+    value: function(datum) { return datum.city; }
+  });
+  </code> </pre>
+      </div>
+
+      <div class="large-5 columns">
+        <p>Enter a city for a timezone.</p>
+        <input type="text" id="timezones" />
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns section">
+        <h4>Custom display for suggestions</h4>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="large-7 columns">
+  <pre> <code class="javascript">
+  var options = {
+    value: function(d) { return d.city; },
+    display: function(datum, input) {
+      var transform = new RegExp("(" + input + ")", "i");
+      return datum.city.replace(transform, "<span style='color: red;'>$1</span>");
+    }
+  };
+  new Autocomplete('input#timezones', timezones, options);
+  </code> </pre>
+      </div>
+
+      <div class="large-5 columns">
+        <p>Enter a timezone.</p>
+        <input type="text" id="timezones2" />
+      </div>
+    
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns section">
+        <h4>Built-in validation</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-7 columns">
+  <pre> <code class="javascript">
+  var validateAutocomplete = new Autocomplete('input#timezones3', timezones, {
+    value: function(d) { return d.city; },
+    validation: true
+  });
+  </code> </pre>
+      <p>test the validity of the input:</p>
+  <pre> <code>
+  validateAutocomplete.isValid; //true if the user selected a timezone
+  </code> </pre>
+      </div>
+
+      <div class="large-5 columns">
+        <p>This form will submit only if you click on one of the suggestion.</p>
+        <div class="row collapse">
+          <form id='formToValidate' action="javascript://">
+            <div class="small-10 columns">
+              <input type="text" id="timezones3" />
+            </div>
+            <div class="small-2 columns">
+              <input class="button prefix" type="submit" value="Ok"/>
+            </div>
+          </form>
+        </div>
+      </div>
+    
+    </div>
+
+    <div class="row">
+      <div class="large-12 columns section">
+        <h4>And more...</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="large-10 large-centered columns">
+        <ul class="circle">
+          <li>API to access the current input and the suggestions</li>
+          <li>Validation on any element (not limited to <kbd>form</kbd>)</li>
+        </ul>
+      </div>
+    </div>
+
+
+
+    <!-- for convenience exports all data in the global scope-->
+    <script src="./assets/data.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="../src/autocomplete.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="./assets/highlight.js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+      hljs.tabReplace = '  '; //two spaces
+      hljs.initHighlightingOnLoad();
+    </script>
+
+    <script src="./assets/demo.js" type="text/javascript" charset="utf-8"></script>
+
+  </body>
+
+</html>
