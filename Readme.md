@@ -1,5 +1,17 @@
 # FrogComplete
 **FrogComplete** is a simple autocompletion widget in vanilla javascript.
+There is a [live demo](http://geekingfrog.com/frogComplete/demo/demo.html) !
+
+This is an pre-interview assignment for Mozilla Taiwan to work on firefox OS as a web engineer. There was some requirements:
+* Avoid using well-known UI libraries. 
+* The dataset should contains around 100~1000 entries. (typical dataset provided).
+* User should be blocked from submit the input unless the input matches one of the entries. 
+* The whole thing should work when loading from http://localhost/ or 
+file:/// url, without server-side (e.g. PHP) logic. 
+* Please take care of memory consumption and efficiency. 
+* Consider making your code unit-testable and reusable. 
+
+Note that the demo uses third party libraries and css, but none of these are required to run the widget and have a decent output.
 
 # Usage and browser support
 Include the library and the stylesheet.
@@ -14,6 +26,7 @@ new Autocomplete('input#colors', data);
 ```
 
 This library has been tested on Firefox 23, Chromium 28, Chrome 29 for android and Firefox 23 for android. See known bug and limitation section for a few gotcha.
+There is no 3rd party library required, just make sure you have a recent browser.
 
 To run the tests, you need [node.js](http://http://nodejs.org/) and [Grunt](http://gruntjs.com) installed. Then:
 ```javascript
@@ -94,3 +107,5 @@ document.querySelector('input').dispatchEvent(event);
 # Limitations and known bugs
 * On Chrome 29 for android, the validation doesn't work after the user has chosen an item, and then changed it.
 * The validation uses a handle on the 'submit' event of the form. Calling form.submit() bypass these handlers and thus, the validation is not performed. If you want to use the validation feature, please don't use form.submit() (or do it after manually checking if the input is valid)
+* You may want to override some of the css for the suggestion list and the error message regarding the positioning. This depend on the existing styling on your form fields.
+
