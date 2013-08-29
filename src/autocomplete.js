@@ -2,10 +2,7 @@
   "use strict";
 
   // function to update the dom list of suggestion
-  var updateSuggestions;
   var updateEvents = ["focus", "change", "paste", "input"];
-  var hideSuggestions;
-  var removeWidget;
 
   // some utility functions
   var insertAfter = function(referenceNode, newNode) {
@@ -16,6 +13,16 @@
     }
   };
 
+  // because phantomJS doesn't have the Event constuctor
+  var createEvent = function(name) {
+    if(typeof Event === 'function'){
+      return new Event(name);
+    } else {
+      var evt = document.createEvent('CustomEvent'); // MUST be 'CustomEvent'
+      evt.initCustomEvent(name, true, false, null);
+      return evt;
+    }
+  };
 
   exports.Autocomplete = function(el, data, opts) {
     var widget = this;
@@ -33,8 +40,8 @@
     };
 
     // for validation
-    widget.isInputValid = false;
-    widget.selectedDatum = null;
+    widget._isInputValid = false;
+    widget._selectedDatum = null;
 
     // controll the verbosity
     if(opts.verbose === void(0)) opts.verbose = true;
@@ -59,34 +66,30 @@
       throw new Error("No data passed. Try something like: new Autocomplete(el, myData)");
     }
 
+    widget.el = el;
+
     if(Object.prototype.toString.call(data) !== "[object Array]") {
       throw new Error("The data should be an array, but got "+ Object.prototype.toString.call(data));
     }
 
-    if(el.getAttribute("autocomplete") === null) {
-      el.setAttribute("autocomplete", '');
-      el.addEventListener("removeAutocomplete", function() { removeWidget(el); });
-    } else {
-      warn("Autocomplete widget already created for this element, removing the previous version.");
-      removeWidget(el);
-    }
-
-    removeWidget = function(el) {
-      el.removeAttribute("autocomplete");
-      updateEvents.forEach(function(evt) {
-        el.removeEventListener(evt, updateSuggestions);
-      });
-      el.removeEventListener("removeAutocomplete");
-      el.removeEventListener("blur", hideSuggestions);
-      if(list && list.parentNode) { list.parentNode.removeChild(list); }
-    };
-
-    opts = opts || {};
-
+    widget._data = data;
     var displayLimit = opts.displayLimit || 5;
 
-    widget.data = data;
-    widget.el = el;
+    widget._getAutocomplete = function(ev) {
+      if(ev.detail && typeof ev.detail === 'function') {
+        ev.detail(widget);
+      }
+    };
+
+    var that = this;
+    if(el.getAttribute("autocomplete") === null) {
+      el.setAttribute("autocomplete", '');
+      el.addEventListener("getAutocomplete", widget._getAutocomplete);
+    } else {
+      throw new Error('widgetAlreadyHere');
+    }
+
+
 
     // object used to map a data to a dom node.
     // It is used with the suggestion list, where each item
@@ -101,6 +104,7 @@
     list.classList.add('fade');
     list.classList.add('hide'); //don't display it yet
     insertAfter(el, list);
+    widget._list = list;
 
     // copy the value(datum) to the input field
     var selectSuggestion = function(ev) {
@@ -117,8 +121,8 @@
       var dataId = item.getAttribute('dataId');
       var datum = internalStore[dataId];
       el.value = widget.value(datum);
-      widget.isInputValid = true;
-      widget.selectedDatum = datum;
+      widget._isInputValid = true;
+      widget._selectedDatum = datum;
       list.classList.add('hide');
     };
     list.addEventListener("click", selectSuggestion, false);
@@ -129,18 +133,19 @@
     warnItem.classList.add('hide');
     warnItem.textContent = "Invalid input, you must chose from the list.";
     insertAfter(widget.el, warnItem);
+    widget._warnItem = warnItem;
 
     // debounce this function later if performance becomes a problem.
-    updateSuggestions = function(widget) {
+    widget._updateSuggestions = function(widget) {
       var lastInput = null;
       return function(ev) {
         var val = widget.el.value;
         var emphasize = new RegExp("("+val+")", 'i');
 
         // input is deemed invalid if it has changed
-        if(widget.selectedDatum && val && val !== widget.selectedDatum) {
-          widget.isInputValid = false;
-          widget.selectedDatum = null;
+        if(widget._selectedDatum && val && val !== widget._selectedDatum) {
+          widget._isInputValid = false;
+          widget._selectedDatum = null;
         }
 
         list.classList.remove('hide');
@@ -181,7 +186,7 @@
 
     // add the required listeners to trigger the update of suggestions.
     updateEvents.forEach(function(evt) {
-      el.addEventListener(evt, updateSuggestions);
+      el.addEventListener(evt, widget._updateSuggestions);
     });
 
 
@@ -194,17 +199,17 @@
       isMouseOverList = false;
     });
 
-    hideSuggestions = function(){
+    widget._hideSuggestions = function(){
       if(!isMouseOverList) {
         list.classList.add('hide');
       }
     };
-    el.addEventListener("blur", hideSuggestions);
+    el.addEventListener("blur", widget._hideSuggestions);
 
 
     // validation part
     var validateTarget = null;
-    var validateTrigger = opts.validateTrigger || 'submit';
+    widget._validateTrigger = opts.validateTrigger || 'submit';
 
     if(opts.validation === true) {
       // the input should be in a form, so the event to block is the 'submit'
@@ -227,19 +232,19 @@
     }
 
     if(validateTarget) {
-      validateTarget.addEventListener(validateTrigger, function(ev) {
-        if(!widget.isInputValid) {
+      validateTarget.addEventListener(widget._validateTrigger, function(ev) {
+        if(!widget._isInputValid) {
           log("form invalid !");
           ev.preventDefault();
           ev.stopPropagation();
-          widget.isInputValid = false;
+          widget._isInputValid = false;
 
           list.innerHTML = '';
 
           warnItem.classList.remove('hide');
           return false;
         } else {
-          widget.isInputValid = true;
+          widget._isInputValid = true;
         }
       });
     }
@@ -263,9 +268,39 @@
     // regexp.lastIndex=0;
     var regexp = new RegExp(text, 'i');
     var that = this;
-    return this.data.filter(function(val) {
+    return this._data.filter(function(val) {
       return regexp.test(that.value(val));
     });
+  };
+
+  Autocomplete.prototype.remove = function(){
+    var widget = this;
+    widget.el.removeAttribute("autocomplete");
+    updateEvents.forEach(function(evt) {
+      widget.el.removeEventListener(evt, widget._updateSuggestions);
+    });
+    widget.el.removeEventListener("blur", widget._hideSuggestions);
+    widget.el.removeEventListener("getAutocomplete", widget._getAutocomplete);
+    widget.el.removeEventListener(widget._validateTrigger);
+    if(widget._list && widget._list.parentNode) {
+      widget._list.parentNode.removeChild(widget._list);
+    }
+    if(widget._warnItem && widget._warnItem.parentNode) {
+      widget._warnItem.parentNode.removeChild(widget._warnItem);
+    }
+    return true;
+  };
+
+  Autocomplete.prototype.getData = function() {
+    return this._data;
+  };
+
+  Autocomplete.prototype.isInputValid = function() {
+    return this._isInputValid;
+  };
+
+  Autocomplete.prototype.getSelectedDatum = function() {
+    return this._selectedDatum;
   };
 
 

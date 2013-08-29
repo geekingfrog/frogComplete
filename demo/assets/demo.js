@@ -35,5 +35,10 @@
     }
   });
 
+  window.test = function() {
+    var evt = document.createEvent('CustomEvent'); // MUST be 'CustomEvent'
+    evt.initCustomEvent('getAutocomplete', true, true, {detail: {data: 'fooo'}});
+    document.querySelector('input').dispatchEvent(evt);
+  };
 
 })(this);

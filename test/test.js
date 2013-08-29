@@ -4,9 +4,9 @@ var globalOpts = {verbose: false};
 
 // polyfill for new Event() in phantomJS, see
 // https://github.com/ariya/phantomjs/issues/11289
-var createEvent = function(name) {
+var createEvent = function(name, data) {
   var evt = document.createEvent('CustomEvent'); // MUST be 'CustomEvent'
-  evt.initCustomEvent(name, true, false, null);
+  evt.initCustomEvent(name, true, false,  data);
   return evt;
 };
 
@@ -30,9 +30,8 @@ module("Creation and destruction", {
     this.target = 'input#target';
   },
   teardown: function() {
-    var node = document.querySelector(this.target);
-
-    node.dispatchEvent(createEvent('removeAutocomplete'));
+    if(this.widget) { this.widget.remove(); }
+    ok(!document.querySelector('input#target[autocomplete]'), "ok");
   }
 });
 
@@ -42,21 +41,25 @@ test("Invalid target element", function() {
 });
 
 test("Valid target selector", function() {
-  var auto1 = new Autocomplete(this.target, [], globalOpts);
-  ok(auto1, "Can pass a valid selector");
+  this.widget = new Autocomplete(this.target, [], globalOpts);
+  ok(this.widget, "Can pass a valid selector");
 });
 
-test("Destruction", function() {
+
+test("Destruction with prototype", function() {
   var auto = new Autocomplete(this.target, [], globalOpts);
   ok(auto , "Sanity test, ");
   ok(document.querySelector('ul.suggestion'), "List of suggestion added to the dom");
-  document.querySelector(this.target).dispatchEvent(createEvent('removeAutocomplete'));
-  equal(document.querySelector('ul.suggestion'), null, "suggestion list removed");
+  auto.remove();
+  equal(document.querySelector('ul.suggestion'), null, "Suggestion list removed");
+  equal(document.querySelector('.autocomplete-error'), null, "Warning message removed");
+  equal(document.querySelector('input[autocomplete]'), null, "No widget created");
 });
 
 test("Valid DOM element", function(){
   var domTarget = document.querySelector(this.target);
-  ok(new Autocomplete(domTarget, [], globalOpts), "Can also directly pass the dom node");
+  this.widget = new Autocomplete(domTarget, [], globalOpts);
+  ok(this.widget, "Can also directly pass the dom node");
   domTarget.dispatchEvent(createEvent('removeAutocomplete'));
 });
 
@@ -65,8 +68,25 @@ test("No data passed", function() {
 
   throws(function(){new Autocomplete(this.target, "foo", globalOpts);}, "Data should be an array, not a string");
   throws(function(){new Autocomplete(this.target, {}, globalOpts);}, "Data should be an array, not an object");
+  equal(document.querySelector('input[autocomplete]'), null, "No widget created");
 });
 
+test("Throw error if widget already here", function() {
+  var auto = new Autocomplete(this.target, [], globalOpts);
+  throws(function(){ new Autocomplete(this.target, [], globalOpts); }, "Cannot instantiate the widget on the same element twice");
+  auto.remove();
+});
+
+asyncTest("Get widget instance with an event", function() {
+  this.widget = new Autocomplete(this.target, [], globalOpts);
+  var widget = this.widget;
+  var cb = function(obj) {
+    equal(obj, widget, "Can get a reference to the widget through events");
+    start();
+  };
+  var evt = createEvent('getAutocomplete', cb);
+  document.querySelector(this.target).dispatchEvent(evt);
+});
 
 module("Filtering data", {
   setup: function() {
@@ -80,7 +100,8 @@ module("Filtering data", {
   },
 
   teardown: function() {
-    this.target.dispatchEvent(createEvent('removeAutocomplete'));
+    if(this.autocomplete) { this.autocomplete.remove(); }
+    ok(!document.querySelector('input#target[autocomplete]'), "ok");
   }
 });
 
@@ -114,7 +135,7 @@ test("With a custom accessor function", function() {
   simulateInput(target, "bul");
   deepEqual(autocomplete.getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
 
-  target.dispatchEvent(createEvent('removeAutocomplete'));
+  autocomplete.remove();
 });
 
 module("List of suggestions", {
@@ -127,11 +148,11 @@ module("List of suggestions", {
 
     simulateInput(this.target, '');
     this.autocomplete = new Autocomplete(this.target, data, globalOpts);
-    window.autocomplete = this.autocomplete;
   },
 
   teardown: function() {
-    this.target.dispatchEvent(createEvent('removeAutocomplete'));
+    this.autocomplete.remove();
+    ok(!document.querySelector('input#target[autocomplete]'), "ok");
   }
 });
 
@@ -147,7 +168,8 @@ test("Display list of suggestions", function() {
 
 test("Custom number of displayed suggestion", function() {
   var opts = _.extend({}, globalOpts, {displayLimit: 2});
-  new Autocomplete(this.target, this.data, opts);
+  this.autocomplete.remove();
+  this.autocomplete = new Autocomplete(this.target, this.data, opts);
 
   simulateInput(this.target, "bulba");
   var children = document.querySelector('ul.suggestion').children;
@@ -167,6 +189,13 @@ test("Click on suggestion copy input", function() {
   equal(this.target.value, "Bulbasaur1", "Clicking on suggestion copy its content to the input");
 });
 
+test("Get the selected item with.", function() {
+  simulateInput(this.target, "bulb");
+  var item = document.querySelectorAll('ul.suggestion li')[0];
+  item.dispatchEvent(createEvent('click'));
+  equal(this.autocomplete.getSelectedDatum(), "Bulbasaur1", "Can get the selected item");
+});
+
 
 module("Validation", {
   setup: function() {
@@ -180,20 +209,21 @@ module("Validation", {
   },
 
   teardown: function() {
-    this.target.dispatchEvent(createEvent('removeAutocomplete'));
+    if(this.widget) { this.widget.remove(); }
+    ok(!document.querySelector('input#target[autocomplete]'), "ok");
   }
 });
 
 test("Validation set to true", function() {
   var opts = _.extend({}, globalOpts, {validation: true});
-  new Autocomplete(this.target, this.data, opts);
+  this.widget = new Autocomplete(this.target, this.data, opts);
   submitForm(this.form);
   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
 
 test("Validation with a selector", function() {
   var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
-  new Autocomplete(this.target, this.data, opts);
+  this.widget = new Autocomplete(this.target, this.data, opts);
   submitForm(this.form);
   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
@@ -201,7 +231,7 @@ test("Validation with a selector", function() {
 test("Validation with a dom node", function(){
   var targetForm = document.querySelector('form#targetForm');
   var opts = _.extend({}, globalOpts, {validation: targetForm});
-  new Autocomplete(this.target, this.data, opts);
+  this.widget = new Autocomplete(this.target, this.data, opts);
   submitForm(this.form);
   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
@@ -212,9 +242,8 @@ test("Custom validation trigger", function() {
     validation: targetValidation,
     validateTrigger: 'click'
   });
-  new Autocomplete(this.target, this.data, opts);
+  this.widget = new Autocomplete(this.target, this.data, opts);
   targetValidation.dispatchEvent(createEvent('click'));
   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
-
 
