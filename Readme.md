@@ -76,6 +76,7 @@ var options = {
 };
 new Autocomplete('input#timezones', timezones, options);
 ```
+* `displayLimit`: an integer to control how many suggestion you want to show. Default to 5.
 
 * `verbose`: Put that to false if you want a silent widget.
 
