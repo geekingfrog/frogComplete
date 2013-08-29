@@ -167,6 +167,7 @@ test("Click on suggestion copy input", function() {
   equal(this.target.value, "Bulbasaur1", "Clicking on suggestion copy its content to the input");
 });
 
+
 module("Validation", {
   setup: function() {
     var data = [
@@ -187,14 +188,14 @@ test("Validation set to true", function() {
   var opts = _.extend({}, globalOpts, {validation: true});
   new Autocomplete(this.target, this.data, opts);
   submitForm(this.form);
-  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
+  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
 
 test("Validation with a selector", function() {
   var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
   new Autocomplete(this.target, this.data, opts);
   submitForm(this.form);
-  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
+  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
 
 test("Validation with a dom node", function(){
@@ -202,7 +203,7 @@ test("Validation with a dom node", function(){
   var opts = _.extend({}, globalOpts, {validation: targetForm});
   new Autocomplete(this.target, this.data, opts);
   submitForm(this.form);
-  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
+  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
 
 test("Custom validation trigger", function() {
@@ -213,7 +214,7 @@ test("Custom validation trigger", function() {
   });
   new Autocomplete(this.target, this.data, opts);
   targetValidation.dispatchEvent(createEvent('click'));
-  ok(document.querySelector('ul.suggestion li.autocomplete-error'), "Error message is displayed");
+  ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
 });
 
 

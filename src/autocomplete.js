@@ -7,8 +7,6 @@
   var hideSuggestions;
   var removeWidget;
 
-  var i; //a loop index;
-
   // some utility functions
   var insertAfter = function(referenceNode, newNode) {
     if(referenceNode.nextSibling){
@@ -95,6 +93,7 @@
     // is associated with one datum, but since these data can be arbitrary,
     // they cannot (and shouldn't) be serialized in the DOM
     var internalStore = {};
+    widget.internalStore = internalStore;
 
 
     var list = document.createElement('ul');
@@ -105,9 +104,17 @@
 
     // copy the value(datum) to the input field
     var selectSuggestion = function(ev) {
-      log("select suggestion at "+Date.now(), ev.target);
       ev.stopPropagation();
-      var dataId = ev.target.getAttribute('dataId');
+
+      // If the displayed content is inside a tag, then ev.target is this
+      // tag and not the expected <li>
+      // So, look for the first parent which has the dataId attribute.
+      var item = ev.target;
+      while(item && item.getAttribute('dataId') === null) {
+        item = item.parentElement;
+      }
+
+      var dataId = item.getAttribute('dataId');
       var datum = internalStore[dataId];
       el.value = widget.value(datum);
       widget.isInputValid = true;
@@ -116,22 +123,17 @@
     };
     list.addEventListener("click", selectSuggestion, false);
 
-    var downTarget = null;
-    list.addEventListener("mousedown", function(ev) {
-      downTarget = ev.target;
-      console.log("mousedown on list", ev.target);
-    });
-
-    list.addEventListener("mouseup", function(ev) {
-      console.log("mouseup on list, same as mousedown ?", ev.target === downTarget);
-    });
-
+    // Dom element to display a warning message
+    var warnItem = document.createElement('div');
+    warnItem.classList.add('autocomplete-error');
+    warnItem.classList.add('hide');
+    warnItem.textContent = "Invalid input, you must chose from the list.";
+    insertAfter(widget.el, warnItem);
 
     // debounce this function later if performance becomes a problem.
     updateSuggestions = function(widget) {
       var lastInput = null;
       return function(ev) {
-        console.log("update suggestion at "+Date.now()+" triggered by "+ev.type);
         var val = widget.el.value;
         var emphasize = new RegExp("("+val+")", 'i');
 
@@ -140,18 +142,15 @@
           widget.isInputValid = false;
           widget.selectedDatum = null;
         }
-        
-        if(!widget.isInputValid) {
-          list.classList.remove('hide');
-        } else {
-          list.classList.add('hide');
-          return;
-        }
 
+        list.classList.remove('hide');
+        
         // always recompute and display the list of suggestion if
         // the error message is visible.
-        var errorDisplayed = list.children.length && list.children[0].classList.contains('autocomplete-error');
+        var errorDisplayed = !warnItem.classList.contains('hide');
         if(lastInput === el.value && !errorDisplayed) { return; }
+
+        warnItem.classList.add('hide');
         
         lastInput = el.value;
         var filteredData = widget.getFilteredData();
@@ -160,6 +159,7 @@
         list.innerHTML = '';
 
         // populate the list
+        internalStore = {};
         toDisplay.forEach(function(datum, index) {
           var item = document.createElement('li');
           item.innerHTML = widget.display(datum, val);
@@ -184,10 +184,20 @@
       el.addEventListener(evt, updateSuggestions);
     });
 
+
+    // Do not hide the suggestion list if the mouse is over it
+    var isMouseOverList = false;
+    list.addEventListener('mouseover', function() {
+      isMouseOverList = true;
+    });
+    list.addEventListener('mouseout', function() {
+      isMouseOverList = false;
+    });
+
     hideSuggestions = function(){
-      setTimeout(function(){
+      if(!isMouseOverList) {
         list.classList.add('hide');
-      }, 100);
+      }
     };
     el.addEventListener("blur", hideSuggestions);
 
@@ -226,15 +236,9 @@
 
           list.innerHTML = '';
 
-          var warnItem = document.createElement('li');
-          warnItem.classList.add('autocomplete-error');
-          warnItem.classList.add('more');
-          warnItem.textContent = "invalid input, you must chose from the list.";
-          list.appendChild(warnItem);
-          list.classList.remove('hide');
+          warnItem.classList.remove('hide');
           return false;
         } else {
-          console.log("input valid");
           widget.isInputValid = true;
         }
       });

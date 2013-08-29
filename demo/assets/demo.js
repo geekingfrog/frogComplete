@@ -11,7 +11,7 @@
 
 
   var colors = ["blue", "green", "red", "orange", "purple", "yellow"];
-  window.autocomplete = new Autocomplete('input#colors', colors);
+  window.colors = new Autocomplete('input#colors', colors);
 
   new Autocomplete('input#timezones', timezones, {
     value: function(datum) { return datum.city; }
