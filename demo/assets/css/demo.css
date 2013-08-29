@@ -1,22 +1,5 @@
-@font-face {
-  font-family: 'mozTT';
-  font-style: normal;
-  font-weight: normal;
-  src: url('../fonts/MozTT-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'mozTT';
-  font-weight: bold;
-  src: url('../fonts/MozTT-Bold.ttf') format('truetype');
-}
-
 * {
   box-sizing: border-box;
-}
-
-body {
-  font-family: 'mozTT';
 }
 
 header {
