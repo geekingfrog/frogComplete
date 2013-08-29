@@ -25,7 +25,7 @@
     }
   });
 
-  new Autocomplete('input#timezones3', timezones, {
+  var validate = new Autocomplete('input#timezones3', timezones, {
     value: function(d) { return d.city; },
     validation: true
   });
