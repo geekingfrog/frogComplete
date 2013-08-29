@@ -1,10 +1,11 @@
 # FrogComplete
 **FrogComplete** is a simple autocompletion widget in vanilla javascript.
+
 There is a [live demo](http://geekingfrog.com/frogComplete/demo/demo.html) !
 
-This is an pre-interview assignment for Mozilla Taiwan to work on firefox OS as a web engineer. There was some requirements:
+This is a pre-interview assignment for Mozilla Taiwan to work on firefox OS as a web engineer. There was some requirements:
 * Avoid using well-known UI libraries. 
-* The dataset should contains around 100~1000 entries. (typical dataset provided).
+* The dataset should contains around 100~1000 entries. (With a typical dataset provided).
 * User should be blocked from submit the input unless the input matches one of the entries. 
 * The whole thing should work when loading from http://localhost/ or 
 file:/// url, without server-side (e.g. PHP) logic. 
@@ -38,9 +39,9 @@ grunt
 
 ## Creation
 `new Autocomplete(target, data, options);`
-* target can be a selector (string) or a dom node
-* data must be a javascript Array
-* options is an optional javascript hash
+* `target` can be a selector (string) or a dom node
+* `data` must be a javascript Array
+* `options` is an optional javascript hash
 
 ```html
 <input type="text" id="target">
@@ -57,7 +58,7 @@ new Autocomplete(document.querySelector('input#target'), data);
 ```
 
 ### Options
-* `value`: This is a function which take an item in `data` and returns a string. This string will be used to check wether an item can complete the current user input. The default function returns the datum cast as string.
+* `value`: This is a function which takes an item in `data` and returns a string. This string will be used to check wether an item can complete the current user input. The default function returns the datum cast as string.
 ```javascript
 var timezones = [{"cc":"TW", "offset":"+08:00,+08:00", "city":"Taipei"}];
 new Autocomplete('input#timezones', timezones, {
@@ -65,13 +66,13 @@ new Autocomplete('input#timezones', timezones, {
 });
 ```
 
-* `display`: Sometimes you want to show more information in the suggestion list, or you want to emphasize the current matching part of the user input. Display is a function which takes two arguments: the matched item and the user input, and returns a string (with some html inside if you want). The default function put the user's input between `<strong></strong>` tag
+* `display`: Sometimes you want to show more information in the suggestion list, or you want to emphasize the current matching part of the user input. Display is a function which takes two arguments: the matched item and the user input, and returns a string (with some html inside if you want). The default function put the user's input between `<strong></strong>` tag.
 ```javascript
 var options = {
   value: function(d) { return d.city; },
   display: function(datum, input) {
     var transform = new RegExp("(" + input + ")", "i");
-    return datum.city.replace(transform, "<span style='color: red;'>$1</span>");
+    return datum.city.replace(transform, "<strong>$1</strong>");
   }
 };
 new Autocomplete('input#timezones', timezones, options);
@@ -80,7 +81,7 @@ new Autocomplete('input#timezones', timezones, options);
 
 * `verbose`: Put that to false if you want a silent widget.
 
-* `validateTarget`. If you want the widget to prevent form submission unless the user selected an item. If the target input is inside a `form` element, just put `validation: true` and the widget will automatically find the form and do its things. If you want to control the behavior of other element, then, you can pass any valid selector or a dom node. In this case, you should also specify `validateTrigger`.
+* `validateTarget`. If you want the widget to prevent form submission unless the user selected an item. If the target input is inside a `form` element, just put `validation: true` and the widget will automatically find the form and do its things. If you want to control the behavior of other element, then, you can pass any valid selector or a dom node. In this case, you should also specify `validateTrigger`. Here is an example of such validation on a regular div.click().
 ```javascript
 // validation on custom element: <div class="button" id="clickMe">
 var options = {
@@ -97,10 +98,12 @@ var options = {
 * `widget.getSelectedDatum()` Return the selected item or null if nothing has been selected.
 * `widget.getFilteredData()` Return the subset of data which can be used to complete the user's input.
 * `Event: getAutocomplete` If you don't have a reference to the widget but only know the dom element with it, you can send an event to this element. Attach a callback to this event. It will be called with the instance of the widget as the only argument.
+
 ```javascript
 var callback = function(widget) {
   //do something with the widget here.
-}
+};
+// create the event with the callback attached as data.
 var event = new CustomEvent('getAutocomplete', {detail: callback});
 document.querySelector('input').dispatchEvent(event);
 ```
