@@ -114,6 +114,8 @@ test("No search query", function() {
 test("With some user input", function() {
   simulateInput(this.target, "no data for this one");
   equal(this.autocomplete.getFilteredData().length, 0, "No data for the wrong input");
+  ok(document.querySelector('ul.frogcomplete-suggestion li.frogcomplete-more'), 
+    "Warning message is shown if nothing matches current input.");
 
   simulateInput(this.target, "Bul");
   deepEqual(this.autocomplete.getFilteredData(), ["Bulbasaur"], "Match result");

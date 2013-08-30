@@ -187,7 +187,7 @@
           list.appendChild(noResult);
         }
 
-        if(filteredData.length === 0) { list.classList.add('frogcomplete-hide'); }
+        if(filteredData.length === 0 && !val) { list.classList.add('frogcomplete-hide'); }
 
       };
     }(this);
