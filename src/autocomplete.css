@@ -1,14 +1,14 @@
-.fade {
+.frogcomplete-fade {
   opacity: 1;
   transition: opacity .3s;
 }
 
-.hide {
+.frogcomplete-hide {
   opacity: 0;
   height: 0;
 }
 
-.suggestion {
+.frogcomplete-suggestion {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -22,40 +22,40 @@
   overflow: auto;
 }
 
-.suggestion li {
+.frogcomplete-suggestion li {
   padding: .1em .5em;
   display: block;
 }
 
-.suggestion li:hover, .suggestion li:focus {
+.frogcomplete-suggestion li:hover, .frogcomplete-suggestion li:focus {
   background: rgba(230, 96, 0, .8);
   cursor: pointer;
   outline: 0;
 }
 
-.suggestion li.more {
+.frogcomplete-suggestion li.frogcomplete-more {
   text-align: center;
   font-size: 90%;
   padding: 0 1em;
 }
 
-.suggestion li.more:hover {
+.frogcomplete-suggestion li.frogcomplete-more:hover {
   background: white;
   cursor: default;
 }
 
 /* to have nice round corners */
-.suggestion li:first-child:hover, .suggestion li:first-child:focus {
+.frogcomplete-suggestion li:first-child:hover, .frogcomplete-suggestion li:first-child:focus {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
 
-.suggestion li:last-child:hover, .suggestion li:last-child:focus {
+.frogcomplete-suggestion li:last-child:hover, .frogcomplete-suggestion li:last-child:focus {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
 
-.autocomplete-error {
+.frogcomplete-error {
   color: rgb(198,15,19);
   background: rgb(249, 230, 230);
   position: absolute;
@@ -64,7 +64,7 @@
   border-radius: 4px;
 }
 
-.suggestion li.autocomplete-error, .suggestion li.autocomplete-error:hover {
+.frogcomplete-suggestion li.frogcomplete-error, .frogcomplete-suggestion li.frogcomplete-error:hover {
   color: rgb(198,15,19);
   background: rgb(249, 230, 230);
 }

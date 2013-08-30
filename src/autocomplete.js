@@ -100,9 +100,9 @@
 
 
     var list = document.createElement('ul');
-    list.classList.add('suggestion');
-    list.classList.add('fade');
-    list.classList.add('hide'); //don't display it yet
+    list.classList.add('frogcomplete-suggestion');
+    list.classList.add('frogcomplete-fade');
+    list.classList.add('frogcomplete-hide'); //don't display it yet
     insertAfter(el, list);
     widget._list = list;
 
@@ -123,14 +123,14 @@
       el.value = widget.value(datum);
       widget._isInputValid = true;
       widget._selectedDatum = datum;
-      list.classList.add('hide');
+      list.classList.add('frogcomplete-hide');
     };
     list.addEventListener("click", selectSuggestion, false);
 
     // Dom element to display a warning message
     var warnItem = document.createElement('div');
-    warnItem.classList.add('autocomplete-error');
-    warnItem.classList.add('hide');
+    warnItem.classList.add('frogcomplete-error');
+    warnItem.classList.add('frogcomplete-hide');
     warnItem.textContent = "Invalid input, you must chose from the list.";
     insertAfter(widget.el, warnItem);
     widget._warnItem = warnItem;
@@ -148,14 +148,14 @@
           widget._selectedDatum = null;
         }
 
-        list.classList.remove('hide');
+        list.classList.remove('frogcomplete-hide');
         
         // always recompute and display the list of suggestion if
         // the error message is visible.
-        var errorDisplayed = !warnItem.classList.contains('hide');
+        var errorDisplayed = !warnItem.classList.contains('frogcomplete-hide');
         if(lastInput === el.value && !errorDisplayed) { return; }
 
-        warnItem.classList.add('hide');
+        warnItem.classList.add('frogcomplete-hide');
         
         lastInput = el.value;
         var filteredData = widget.getFilteredData();
@@ -174,11 +174,11 @@
         });
         if(filteredData.length >= displayLimit) {
           var more = document.createElement('li');
-          more.classList.add('more');
+          more.classList.add('frogcomplete-more');
           more.textContent = "And more...";
           list.appendChild(more);
         }
-        if(filteredData.length === 0) { list.classList.add('hide'); }
+        if(filteredData.length === 0) { list.classList.add('frogcomplete-hide'); }
 
       };
     }(this);
@@ -201,7 +201,7 @@
 
     widget._hideSuggestions = function(){
       if(!isMouseOverList) {
-        list.classList.add('hide');
+        list.classList.add('frogcomplete-hide');
       }
     };
     el.addEventListener("blur", widget._hideSuggestions);
@@ -240,7 +240,7 @@
 
           list.innerHTML = '';
 
-          warnItem.classList.remove('hide');
+          warnItem.classList.remove('frogcomplete-hide');
           return false;
         } else {
           widget._isInputValid = true;

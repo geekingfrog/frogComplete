@@ -49,10 +49,11 @@ test("Valid target selector", function() {
 test("Destruction with prototype", function() {
   var auto = new Autocomplete(this.target, [], globalOpts);
   ok(auto , "Sanity test, ");
-  ok(document.querySelector('ul.suggestion'), "List of suggestion added to the dom");
+  ok(document.querySelector('ul.frogcomplete-suggestion'), "List of suggestion added to the dom");
+  ok(document.querySelector('.frogcomplete-error'), "Placeholder for error message is here");
   auto.remove();
-  equal(document.querySelector('ul.suggestion'), null, "Suggestion list removed");
-  equal(document.querySelector('.autocomplete-error'), null, "Warning message removed");
+  equal(document.querySelector('ul.frogcomplete-suggestion'), null, "Suggestion list removed");
+  equal(document.querySelector('.frogcomplete-error'), null, "Warning message removed");
   equal(document.querySelector('input[autocomplete]'), null, "No widget created");
 });
 
@@ -158,11 +159,11 @@ module("List of suggestions", {
 
 test("Display list of suggestions", function() {
   simulateInput(this.target, "bulba");
-  var children = document.querySelector('ul.suggestion').children;
+  var children = document.querySelector('ul.frogcomplete-suggestion').children;
   equal(children.length, 6, "only show 5 suggestion by default (plus the 'more' item)");
 
   simulateInput(this.target, "mew");
-  children = document.querySelector('ul.suggestion').children;
+  children = document.querySelector('ul.frogcomplete-suggestion').children;
   equal(children.length, 1, "The 'more' item is not shown if filtered result below display limit");
 });
 
@@ -172,78 +173,78 @@ test("Custom number of displayed suggestion", function() {
   this.autocomplete = new Autocomplete(this.target, this.data, opts);
 
   simulateInput(this.target, "bulba");
-  var children = document.querySelector('ul.suggestion').children;
+  var children = document.querySelector('ul.frogcomplete-suggestion').children;
   equal(children.length, 3, "Can override the number of displayed suggestions");
 });
 
 test("Display only relevant suggestions", function() {
   simulateInput(this.target, "bulbasaur1");
-  equal(document.querySelector('ul.suggestion').children.length, 1,
+  equal(document.querySelector('ul.frogcomplete-suggestion').children.length, 1,
     "Only one suggestion");
 });
 
 test("Click on suggestion copy input", function() {
   simulateInput(this.target, "bulb");
-  var item = document.querySelectorAll('ul.suggestion li')[0];
+  var item = document.querySelectorAll('ul.frogcomplete-suggestion li')[0];
   item.dispatchEvent(createEvent('click'));
   equal(this.target.value, "Bulbasaur1", "Clicking on suggestion copy its content to the input");
 });
 
 test("Get the selected item with.", function() {
   simulateInput(this.target, "bulb");
-  var item = document.querySelectorAll('ul.suggestion li')[0];
+  var item = document.querySelectorAll('ul.frogcomplete-suggestion li')[0];
   item.dispatchEvent(createEvent('click'));
   equal(this.autocomplete.getSelectedDatum(), "Bulbasaur1", "Can get the selected item");
 });
 
 
-// module("Validation", {
-//   setup: function() {
-//     var data = [
-//       "Bulbasaur1", "Bulbasaur2", "Bulbasaur3", "Bulbasaur4", "Bulbasaur5", "Bulbasaur6", "Mew", "Pikachu"
-//     ];
-//     this.data = data;
-//     this.target = document.querySelector('input#target');
-//     simulateInput(this.target, '');
-//     this.form = document.querySelector('form');
-//   },
-// 
-//   teardown: function() {
-//     if(this.widget) { this.widget.remove(); }
-//     ok(!document.querySelector('input#target[autocomplete]'), "ok");
-//   }
-// });
-// 
-// test("Validation set to true", function() {
-//   var opts = _.extend({}, globalOpts, {validation: true});
-//   this.widget = new Autocomplete(this.target, this.data, opts);
-//   submitForm(this.form);
-//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-// });
-// 
-// test("Validation with a selector", function() {
-//   var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
-//   this.widget = new Autocomplete(this.target, this.data, opts);
-//   submitForm(this.form);
-//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-// });
-// 
-// test("Validation with a dom node", function(){
-//   var targetForm = document.querySelector('form#targetForm');
-//   var opts = _.extend({}, globalOpts, {validation: targetForm});
-//   this.widget = new Autocomplete(this.target, this.data, opts);
-//   submitForm(this.form);
-//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-// });
-// 
-// test("Custom validation trigger", function() {
-//   var targetValidation = document.querySelector('div#submitTrigger');
-//   var opts = _.extend({}, globalOpts, {
-//     validation: targetValidation,
-//     validateTrigger: 'click'
-//   });
-//   this.widget = new Autocomplete(this.target, this.data, opts);
-//   targetValidation.dispatchEvent(createEvent('click'));
-//   ok(document.querySelector('.autocomplete-error:not(.hide)'), "Error message is displayed");
-// });
-// 
+module("Validation", {
+  setup: function() {
+    var data = [
+      "Bulbasaur1", "Bulbasaur2", "Bulbasaur3", "Bulbasaur4", "Bulbasaur5", "Bulbasaur6", "Mew", "Pikachu"
+    ];
+    this.data = data;
+    this.target = document.querySelector('input#target');
+    simulateInput(this.target, '');
+    this.form = document.querySelector('form');
+  },
+
+  teardown: function() {
+    if(this.widget) { this.widget.remove(); }
+    ok(!document.querySelector('input#target[autocomplete]'), "ok");
+  }
+});
+
+test("Validation set to true", function() {
+  var opts = _.extend({}, globalOpts, {validation: true});
+  this.widget = new Autocomplete(this.target, this.data, opts);
+  submitForm(this.form);
+  ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
+});
+
+test("Validation with a selector", function() {
+  var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
+  this.widget = new Autocomplete(this.target, this.data, opts);
+  submitForm(this.form);
+  ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
+});
+
+test("Validation with a dom node", function(){
+  var targetForm = document.querySelector('form#targetForm');
+  var opts = _.extend({}, globalOpts, {validation: targetForm});
+  this.widget = new Autocomplete(this.target, this.data, opts);
+  submitForm(this.form);
+  ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
+});
+
+test("Custom validation trigger", function() {
+  var targetValidation = document.querySelector('div#submitTrigger');
+  var opts = _.extend({}, globalOpts, {
+    validation: targetValidation,
+    validateTrigger: 'click'
+  });
+  this.widget = new Autocomplete(this.target, this.data, opts);
+  targetValidation.dispatchEvent(createEvent('click'));
+  ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
+});
+
