@@ -1,11 +1,16 @@
 .frogcomplete-fade {
   opacity: 1;
-  transition: opacity .3s;
+  transition: opacity .4s;
 }
 
+/*
+ * Utility class to hide an element.
+ * display:none is not used to provide smooth apparition.
+ */
 .frogcomplete-hide {
   opacity: 0;
   height: 0;
+  z-index: -1 !important;
 }
 
 .frogcomplete-suggestion {

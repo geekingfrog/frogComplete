@@ -31,23 +31,23 @@ module("Creation and destruction", {
   },
   teardown: function() {
     if(this.widget) { this.widget.remove(); }
-    ok(!document.querySelector('input#target[autocomplete]'), "ok");
+    ok(!document.querySelector('input#target[frogcomplete]'), "ok");
   }
 });
 
 test("Invalid target element", function() {
-  throws(function(){new Autocomplete(null, null, globalOpts);}, "Cannot create the widget without a target");
-  throws(function(){new Autocomplete('doesntexist', null, globalOpts);}, "Cannot create the widget with an invalid dom selector");
+  throws(function(){new Frogcomplete(null, null, globalOpts);}, "Cannot create the widget without a target");
+  throws(function(){new Frogcomplete('doesntexist', null, globalOpts);}, "Cannot create the widget with an invalid dom selector");
 });
 
 test("Valid target selector", function() {
-  this.widget = new Autocomplete(this.target, [], globalOpts);
+  this.widget = new Frogcomplete(this.target, [], globalOpts);
   ok(this.widget, "Can pass a valid selector");
 });
 
 
 test("Destruction with prototype", function() {
-  var auto = new Autocomplete(this.target, [], globalOpts);
+  var auto = new Frogcomplete(this.target, [], globalOpts);
   ok(auto , "Sanity test, ");
   ok(document.querySelector('ul.frogcomplete-suggestion'), "List of suggestion added to the dom");
   ok(document.querySelector('.frogcomplete-error'), "Placeholder for error message is here");
@@ -59,33 +59,33 @@ test("Destruction with prototype", function() {
 
 test("Valid DOM element", function(){
   var domTarget = document.querySelector(this.target);
-  this.widget = new Autocomplete(domTarget, [], globalOpts);
+  this.widget = new Frogcomplete(domTarget, [], globalOpts);
   ok(this.widget, "Can also directly pass the dom node");
   domTarget.dispatchEvent(createEvent('removeAutocomplete'));
 });
 
 test("No data passed", function() {
-  throws(function(){new Autocomplete(this.target, null, globalOpts);}, "Cannot create the widget without valid data");
+  throws(function(){new Frogcomplete(this.target, null, globalOpts);}, "Cannot create the widget without valid data");
 
-  throws(function(){new Autocomplete(this.target, "foo", globalOpts);}, "Data should be an array, not a string");
-  throws(function(){new Autocomplete(this.target, {}, globalOpts);}, "Data should be an array, not an object");
+  throws(function(){new Frogcomplete(this.target, "foo", globalOpts);}, "Data should be an array, not a string");
+  throws(function(){new Frogcomplete(this.target, {}, globalOpts);}, "Data should be an array, not an object");
   equal(document.querySelector('input[autocomplete]'), null, "No widget created");
 });
 
 test("Throw error if widget already here", function() {
-  var auto = new Autocomplete(this.target, [], globalOpts);
-  throws(function(){ new Autocomplete(this.target, [], globalOpts); }, "Cannot instantiate the widget on the same element twice");
+  var auto = new Frogcomplete(this.target, [], globalOpts);
+  throws(function(){ new Frogcomplete(this.target, [], globalOpts); }, "Cannot instantiate the widget on the same element twice");
   auto.remove();
 });
 
 asyncTest("Get widget instance with an event", function() {
-  this.widget = new Autocomplete(this.target, [], globalOpts);
+  this.widget = new Frogcomplete(this.target, [], globalOpts);
   var widget = this.widget;
   var cb = function(obj) {
     equal(obj, widget, "Can get a reference to the widget through events");
     start();
   };
-  var evt = createEvent('getAutocomplete', cb);
+  var evt = createEvent('getFrogcomplete', cb);
   document.querySelector(this.target).dispatchEvent(evt);
 });
 
@@ -97,7 +97,7 @@ module("Filtering data", {
     this.data = data;
     this.target = document.querySelector('input#target');
     simulateInput(this.target, '');
-    this.autocomplete = new Autocomplete(target, data, globalOpts);
+    this.autocomplete = new Frogcomplete(target, data, globalOpts);
   },
 
   teardown: function() {
@@ -131,7 +131,7 @@ test("With a custom accessor function", function() {
   data = [ {name: "Bulbasaur"}, {name: "Mew"} ];
   var opts = _.extend({}, globalOpts, {value: function(d) { return d.name; }});
   var target = document.querySelector('input#target');
-  var autocomplete = new Autocomplete(target, data, opts);
+  var autocomplete = new Frogcomplete(target, data, opts);
 
   simulateInput(target, "bul");
   deepEqual(autocomplete.getFilteredData(), [{name: "Bulbasaur"}], "Can specify custom accessor for complex data.");
@@ -148,7 +148,7 @@ module("List of suggestions", {
     this.target = document.querySelector('input#target');
 
     simulateInput(this.target, '');
-    this.autocomplete = new Autocomplete(this.target, data, globalOpts);
+    this.autocomplete = new Frogcomplete(this.target, data, globalOpts);
   },
 
   teardown: function() {
@@ -170,7 +170,7 @@ test("Display list of suggestions", function() {
 test("Custom number of displayed suggestion", function() {
   var opts = _.extend({}, globalOpts, {displayLimit: 2});
   this.autocomplete.remove();
-  this.autocomplete = new Autocomplete(this.target, this.data, opts);
+  this.autocomplete = new Frogcomplete(this.target, this.data, opts);
 
   simulateInput(this.target, "bulba");
   var children = document.querySelector('ul.frogcomplete-suggestion').children;
@@ -217,14 +217,14 @@ module("Validation", {
 
 test("Validation set to true", function() {
   var opts = _.extend({}, globalOpts, {validation: true});
-  this.widget = new Autocomplete(this.target, this.data, opts);
+  this.widget = new Frogcomplete(this.target, this.data, opts);
   submitForm(this.form);
   ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
 });
 
 test("Validation with a selector", function() {
   var opts = _.extend({}, globalOpts, {validation: 'form#targetForm'});
-  this.widget = new Autocomplete(this.target, this.data, opts);
+  this.widget = new Frogcomplete(this.target, this.data, opts);
   submitForm(this.form);
   ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
 });
@@ -232,7 +232,7 @@ test("Validation with a selector", function() {
 test("Validation with a dom node", function(){
   var targetForm = document.querySelector('form#targetForm');
   var opts = _.extend({}, globalOpts, {validation: targetForm});
-  this.widget = new Autocomplete(this.target, this.data, opts);
+  this.widget = new Frogcomplete(this.target, this.data, opts);
   submitForm(this.form);
   ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
 });
@@ -243,7 +243,7 @@ test("Custom validation trigger", function() {
     validation: targetValidation,
     validateTrigger: 'click'
   });
-  this.widget = new Autocomplete(this.target, this.data, opts);
+  this.widget = new Frogcomplete(this.target, this.data, opts);
   targetValidation.dispatchEvent(createEvent('click'));
   ok(document.querySelector('.frogcomplete-error:not(.hide)'), "Error message is displayed");
 });

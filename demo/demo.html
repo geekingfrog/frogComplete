@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./assets/css/foundation.css"/>
     <link rel="stylesheet" href="./assets/highlight.js/styles/github.css"/>
 
-    <link rel="stylesheet" href="../src/autocomplete.css" type="text/css" />
+    <link rel="stylesheet" href="../src/frogcomplete.css" type="text/css" />
     <link rel="stylesheet" href="./assets/css/demo.css" type="text/css" />
 
     <title>FrogComplete</title>
@@ -35,7 +35,7 @@
 
   <pre> <code class="javascript">
   var data = ["blue", "green", "red", "orange", "purple", "yellow"];
-  new Autocomplete('input#colors', data);
+  new Frogcomplete('input#colors', data);
   </code> </pre>
 
       </div>
@@ -56,7 +56,7 @@
       <div class="large-7 columns">
   <pre> <code class="javascript">
   var timezones = [{"cc":"TW", "offset":"+08:00,+08:00", "city":"Taipei"}, (...)];
-  new Autocomplete('input#timezones', timezones, {
+  new Frogcomplete('input#timezones', timezones, {
     value: function(datum) { return datum.city; }
   });
   </code> </pre>
@@ -82,7 +82,7 @@
       return datum.city.replace(transform, "&lt;span style='color: red;'>$1&lt;/span>");
     }
   };
-  new Autocomplete('input#timezones', timezones, options);
+  new Frogcomplete('input#timezones', timezones, options);
   </code> </pre>
       </div>
 
@@ -98,14 +98,14 @@
     <div class="row">
       <div class="large-7 columns">
   <pre> <code class="javascript">
-  var validateAutocomplete = new Autocomplete('input#timezones3', timezones, {
+  var validateFrogcomplete = new Frogcomplete('input#timezones3', timezones, {
     value: function(d) { return d.city; },
     validation: true
   });
   </code> </pre>
       <p>test the validity of the input:</p>
   <pre> <code>
-  validateAutocomplete.getIsValid(); //true if the user selected a timezone
+  validateFrogcomplete.getIsValid(); //true if the user selected a timezone
   </code> </pre>
       </div>
 
@@ -141,7 +141,7 @@
     <!-- for convenience exports all data in the global scope-->
     <script src="./assets/data.js" type="text/javascript" charset="utf-8"></script>
 
-    <script src="../src/autocomplete.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../src/frogcomplete.js" type="text/javascript" charset="utf-8"></script>
 
     <script src="./assets/highlight.js/highlight.pack.js" type="text/javascript" charset="utf-8"></script>
     <script>

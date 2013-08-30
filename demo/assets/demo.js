@@ -11,13 +11,13 @@
 
 
   var colors = ["blue", "green", "red", "orange", "purple", "yellow"];
-  window.colors = new Autocomplete('input#colors', colors);
+  window.colors = new Frogcomplete('input#colors', colors);
 
-  new Autocomplete('input#timezones', timezones, {
+  new Frogcomplete('input#timezones', timezones, {
     value: function(datum) { return datum.city; }
   });
 
-  new Autocomplete('input#timezones2', timezones, {
+  new Frogcomplete('input#timezones2', timezones, {
     value: function(d) { return d.city; },
     display: function(datum, input) {
       var transform = new RegExp("(" + input + ")", "i");
@@ -25,7 +25,7 @@
     }
   });
 
-  var validate = new Autocomplete('input#timezones3', timezones, {
+  var validate = new Frogcomplete('input#timezones3', timezones, {
     value: function(d) { return d.city; },
     validation: true
   });
@@ -35,7 +35,7 @@
     }
   });
 
-  new Autocomplete('input#timezones4', timezones, {
+  new Frogcomplete('input#timezones4', timezones, {
     value: function(d) { return d.city; },
     validation: '#buttonTimezones4',
     validateTrigger: 'click'

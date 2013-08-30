@@ -17,13 +17,13 @@ Note that the demo uses third party libraries and css, but none of these are req
 # Usage and browser support
 Include the library and the stylesheet.
 ```html
-<link rel="stylesheet" href="./lib/autocomplete.css" type="text/css" />
-<script src="./lib/autocomplete.js" type="text/javascript"></script>
+<link rel="stylesheet" href="./lib/frogcomplete.css" type="text/css" />
+<script src="./lib/frogcomplete.js" type="text/javascript"></script>
 ```
 
 ```javascript
 var data = ["blue", "green", "red", "orange", "purple", "yellow"];
-new Autocomplete('input#colors', data);
+new Frogcomplete('input#colors', data);
 ```
 
 This library has been tested on Firefox 23, Chromium 28, Chrome 29 for android and Firefox 23 for android. See known bug and limitation section for a few gotcha.
@@ -38,7 +38,7 @@ grunt
 # Documentation
 
 ## Creation
-`new Autocomplete(target, data, options);`
+`new Frogcomplete(target, data, options);`
 * `target` can be a selector (string) or a dom node
 * `data` must be a javascript Array
 * `options` is an optional javascript hash
@@ -51,17 +51,17 @@ grunt
 var data = ["blue", "green", "red", "orange", "purple", "yellow"];
 
 // Pass a selector
-new Autocomplete('input#target', data);
+new Frogcomplete('input#target', data);
 
 // or directly a dom element
-new Autocomplete(document.querySelector('input#target'), data);
+new Frogcomplete(document.querySelector('input#target'), data);
 ```
 
 ### Options
 * `value`: This is a function which takes an item in `data` and returns a string. This string will be used to check wether an item can complete the current user input. The default function returns the datum cast as string.
 ```javascript
 var timezones = [{"cc":"TW", "offset":"+08:00,+08:00", "city":"Taipei"}];
-new Autocomplete('input#timezones', timezones, {
+new Frogcomplete('input#timezones', timezones, {
   value: function(datum) { return datum.city; }
 });
 ```
@@ -75,7 +75,7 @@ var options = {
     return datum.city.replace(transform, "<strong>$1</strong>");
   }
 };
-new Autocomplete('input#timezones', timezones, options);
+new Frogcomplete('input#timezones', timezones, options);
 ```
 * `displayLimit`: an integer to control how many suggestion you want to show. Default to 5.
 
@@ -91,20 +91,20 @@ var options = {
 ``` 
 
 ## API
-`var widget = new Autocomplete('input', []);`
+`var widget = new Frogcomplete('input', []);`
 * `widget.remove()`. Pretty explicit. Will clean up everything and remove itself.
 * `widget.getData()` Returns the data used by the widget.
 * `widget.isInputValid()` Return true if the current content of the input has been selected from the list of suggestion.
 * `widget.getSelectedDatum()` Return the selected item or null if nothing has been selected.
 * `widget.getFilteredData()` Return the subset of data which can be used to complete the user's input.
-* `Event: getAutocomplete` If you don't have a reference to the widget but only know the dom element with it, you can send an event to this element. Attach a callback to this event. It will be called with the instance of the widget as the only argument.
+* `Event: getFrogcomplete` If you don't have a reference to the widget but only know the dom element with it, you can send an event to this element. Attach a callback to this event. It will be called with the instance of the widget as the only argument.
 
 ```javascript
 var callback = function(widget) {
   //do something with the widget here.
 };
 // create the event with the callback attached as data.
-var event = new CustomEvent('getAutocomplete', {detail: callback});
+var event = new CustomEvent('getFrogComplete', {detail: callback});
 document.querySelector('input').dispatchEvent(event);
 ```
 

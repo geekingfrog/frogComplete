@@ -24,7 +24,7 @@
     }
   };
 
-  exports.Autocomplete = function(el, data, opts) {
+  exports.Frogcomplete = function(el, data, opts) {
     var widget = this;
     opts = opts || {};
  
@@ -59,11 +59,11 @@
     }
 
     if(el === void(0) || el === null) {
-      throw new Error("You must pass an input element at creation. Eg: new Autocomplete(document.querySelector('input#target'))");
+      throw new Error("You must pass an input element at creation. Eg: new Frogcomplete(document.querySelector('input#target'))");
     }
 
     if(data === void(0) || data === null) {
-      throw new Error("No data passed. Try something like: new Autocomplete(el, myData)");
+      throw new Error("No data passed. Try something like: new Frogcomplete(el, myData)");
     }
 
     widget.el = el;
@@ -75,16 +75,16 @@
     widget._data = data;
     var displayLimit = opts.displayLimit || 5;
 
-    widget._getAutocomplete = function(ev) {
+    widget._getFrogcomplete = function(ev) {
       if(ev.detail && typeof ev.detail === 'function') {
         ev.detail(widget);
       }
     };
 
     var that = this;
-    if(el.getAttribute("autocomplete") === null) {
-      el.setAttribute("autocomplete", '');
-      el.addEventListener("getAutocomplete", widget._getAutocomplete);
+    if(el.getAttribute("frogcomplete") === null) {
+      el.setAttribute("frogcomplete", '');
+      el.addEventListener("getFrogcomplete", widget._getFrogcomplete);
     } else {
       throw new Error('widgetAlreadyHere');
     }
@@ -172,12 +172,21 @@
           internalStore[index] = datum;
           list.appendChild(item);
         });
+
         if(filteredData.length >= displayLimit) {
           var more = document.createElement('li');
           more.classList.add('frogcomplete-more');
           more.textContent = "And more...";
           list.appendChild(more);
         }
+
+        if(filteredData.length === 0 && val) {
+          var noResult = document.createElement('li');
+          noResult.classList.add('frogcomplete-more');
+          noResult.textContent = "Nothing looks like that :/";
+          list.appendChild(noResult);
+        }
+
         if(filteredData.length === 0) { list.classList.add('frogcomplete-hide'); }
 
       };
@@ -255,7 +264,7 @@
   // from the content of the input element, return a subset (eventually empty)
   // of the original data where each element matches the content with respect
   // to the 'value' accessor.
-  Autocomplete.prototype.getFilteredData = function() {
+  Frogcomplete.prototype.getFilteredData = function() {
     var text = this.el.value;
     if(!text) return [];
 
@@ -272,14 +281,14 @@
     });
   };
 
-  Autocomplete.prototype.remove = function(){
+  Frogcomplete.prototype.remove = function(){
     var widget = this;
-    widget.el.removeAttribute("autocomplete");
+    widget.el.removeAttribute("frogcomplete");
     updateEvents.forEach(function(evt) {
       widget.el.removeEventListener(evt, widget._updateSuggestions);
     });
     widget.el.removeEventListener("blur", widget._hideSuggestions);
-    widget.el.removeEventListener("getAutocomplete", widget._getAutocomplete);
+    widget.el.removeEventListener("getFrogcomplete", widget._getFrogcomplete);
     widget.el.removeEventListener(widget._validateTrigger);
     if(widget._list && widget._list.parentNode) {
       widget._list.parentNode.removeChild(widget._list);
@@ -290,15 +299,15 @@
     return true;
   };
 
-  Autocomplete.prototype.getData = function() {
+  Frogcomplete.prototype.getData = function() {
     return this._data;
   };
 
-  Autocomplete.prototype.isInputValid = function() {
+  Frogcomplete.prototype.isInputValid = function() {
     return this._isInputValid;
   };
 
-  Autocomplete.prototype.getSelectedDatum = function() {
+  Frogcomplete.prototype.getSelectedDatum = function() {
     return this._selectedDatum;
   };
 
